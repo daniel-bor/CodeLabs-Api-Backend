@@ -42,4 +42,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Relación con la tabla "empleados"
+    public function empleado()
+    {
+        return $this->hasOne(Empleado::class, 'usuario_id');
+    }
+
+    // Relación con la tabla "clientes"
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class, 'usuario_id');
+    }
+
+    // Relación con la tabla "roles"
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'rol_id');
+    }
+
+    // Relación con la tabla "encabezado_bitacora"
+    public function encabezadosBitacora()
+    {
+        return $this->hasMany(EncabezadoBitacora::class, 'usuario_id');
+    }
 }
