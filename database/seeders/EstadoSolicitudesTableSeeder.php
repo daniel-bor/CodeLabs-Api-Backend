@@ -16,18 +16,59 @@ class EstadoSolicitudesTableSeeder extends Seeder
         // Definir los registros de estados de solicitudes
         $estadosSolicitudes = [
             [
-                'nombre' => 'Pendiente',
+                'nombre' => 'Creada',
                 'descripcion' => 'Solicitud pendiente de procesamiento',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'En proceso',
+                'nombre' => 'Enviada',
                 'descripcion' => 'Solicitud en proceso de análisis',
-                'creado_por' => 2, // ID del usuario que creó este estado
+                'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
-            // Agregar más estados de solicitudes aquí
+            [
+                'nombre' => 'Recibida',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Asignada',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'En Analisis',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Espera',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Revision',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Finalizado',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Rechazada',
+                'descripcion' => 'Solicitud en proceso de análisis',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ]
         ];
 
         // Insertar los registros en la tabla estado_solicitudes

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -26,13 +29,61 @@ class AuthController extends Controller
             return response()->json(['error' => 'No se pudo crear el token'], 500);
         }
 
-        // El inicio de sesión fue exitoso, devuelve el token JWT y los datos del usuario
+        // El inicio de sesión fue exitoso, devuelve el token JWT y los datos del usuario y del cliente asociado
         $user = JWTAuth::user();
+        $cliente = Cliente::where('usuario_id', $user->id)->first();
 
         return response()->json([
             'token' => $token,
             'user' => $user,
+            'cliente' => $cliente, // Agrega los datos del cliente asociado aquí
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'profesion' => 'string|max:20',
+                'nit' => 'required|string|max:12',
+                'telefono' => 'required|string|max:10',
+                'name' => 'required|string|max:20',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6',
+            ]);
+
+        } catch (ValidationException $e) {
+            // La validación ha fallado
+            $errors = $e->validator->errors()->messages();
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        try {
+            // Crear un nuevo usuario
+            $user = new User([
+                'name' => $request->name,
+                'email' => $request->email,
+                'telefono' => $request->telefono,
+                'password' => Hash::make($request->password),
+            ]);
+            $user->save();
+
+            // Crear un nuevo cliente
+            $cliente = new Cliente([
+                'usuario_id' => $user->id,
+                'nit ' => $request->nit,
+                'profesion ' => $request->profesion
+            ]);
+            $cliente->save();
+
+            // Opcional: Puedes generar un token JWT para el usuario registrado si deseas que inicien sesión automáticamente
+            // use JWTAuth; // Importa JWTAuth al principio del controlador
+            // $token = JWTAuth::fromUser($user);
+
+            return response()->json(['message' => 'Registro exitoso'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'No se pudo registrar el usuario'], 500);
+        }
     }
 
     public function logout()
