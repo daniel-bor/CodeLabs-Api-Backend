@@ -6,15 +6,13 @@ use App\Models\Solicitud;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use App\Models\Muestra;
-use PHPUnit\Framework\Constraint\Count;
 
 class SolicitudController extends Controller
 {
     public function index()
     {
       // Iniciar la consulta con el modelo Solicitud
-      $solicitudes = Solicitud::select('id','codigo_solicitud', 'no_soporte','cliente_id','created_at')
+      $solicitudes = Solicitud::select('id','codigo', 'no_soporte','cliente_id','created_at')
       ->with('itemsSolicitados')
       ->with('usuarioasignado')
       ->with('estadoSolicitud')
@@ -32,7 +30,7 @@ class SolicitudController extends Controller
         $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
         return [
             'id' => $item->id,
-            'codigo_solicitud' => $item->codigo_solicitud,
+            'codigo' => $item->codigo,
             'NoExpediente' => $item->Cliente->NoExpediente,
             'nit' => $item->cliente->nit,
             'no_soporte' => $item->no_soporte,
@@ -60,7 +58,7 @@ class SolicitudController extends Controller
         $EstadoSolicitud = $request->query('EstadoSolicitud');
 
         // Iniciar la consulta con el modelo Solicitud
-        $query = Solicitud::select('id','codigo_solicitud', 'no_soporte','cliente_id','created_at')
+        $query = Solicitud::select('id','codigo', 'no_soporte','cliente_id','created_at')
         ->with('itemsSolicitados')
         ->with('usuarioasignado')
         ->with('estadoSolicitud')
@@ -109,7 +107,7 @@ class SolicitudController extends Controller
             $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
             return [
                 'id' => $item->id,
-                'codigo_solicitud' => $item->codigo_solicitud,
+                'codigo' => $item->codigo,
                 'NoExpediente' => $item->Cliente->NoExpediente,
                 'nit' => $item->cliente->nit,
                 'no_soporte' => $item->no_soporte,
