@@ -16,8 +16,8 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'Usuario 1',
-            'email' => 'usuario1@example.com',
+            'name' => 'Daniel Bor',
+            'email' => 'info@danielbor.tech',
             'email_verified_at' => now(),
             'password' => Hash::make('123456789'),
             'remember_token' => Str::random(10),
@@ -26,8 +26,18 @@ class UsersTableSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name' => 'Usuario 2',
-            'email' => 'usuario2@example.com',
+            'name' => 'Gabriel Valdez',
+            'email' => 'gvaldezd@miumg.edu.gt',
+            'email_verified_at' => now(),
+            'password' => Hash::make('123456789'),
+            'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('users')->insert([
+            'name' => 'Eleazar',
+            'email' => 'jchetc5@miumg.edu.gt',
             'email_verified_at' => now(),
             'password' => Hash::make('123456789'),
             'remember_token' => Str::random(10),

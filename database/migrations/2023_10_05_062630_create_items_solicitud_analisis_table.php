@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('solicitud_id')->notNull();
             $table->unsignedBigInteger('item_id')->notNull();
-            $table->boolean('estado')->default(true);
-            $table->timestamp('fecha_creacion')->default(now());
+            $table->integer('estado')->default(1);
+            $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('solicitud_id')->references('id')->on('solicitudes');
