@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\table;
+
 return new class extends Migration
 {
     /**
@@ -16,11 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('tipo_soporte_id')->notNull();
             $table->string('no_soporte', 50)->notNull();
             $table->string('descripcion', 100)->notNull();
-            $table->date('fecha_recepcion')->notNull();
             $table->unsignedBigInteger('cliente_id')->notNull();
-            $table->integer('longitud')->notNull();
-            $table->integer('latitud')->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
+            $table->string('longitud')->notNull();
+            $table->string('latitud')->notNull();
+            $table->integer('estado')->default(1);
+            $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('tipo_soporte_id')->references('id')->on('tipo_soportes');

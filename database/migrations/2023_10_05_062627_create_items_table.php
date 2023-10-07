@@ -16,11 +16,10 @@ return new class extends Migration
             $table->string('nombre', 255)->notNull();
             $table->string('descripcion', 255)->notNull();
             $table->unsignedBigInteger('tipo_examen_id')->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
-            $table->timestamp('fecha_modificacion')->nullable();
             $table->unsignedBigInteger('creado_por')->notNull();
             $table->unsignedBigInteger('modificado_por')->nullable();
             $table->integer('estado')->default(1);
+            $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('creado_por')->references('id')->on('users');
