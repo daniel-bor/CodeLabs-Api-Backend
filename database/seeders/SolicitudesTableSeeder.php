@@ -19,19 +19,19 @@ class SolicitudesTableSeeder extends Seeder
                 'tipo_soporte_id' => 1, // ID del tipo de soporte
                 'no_soporte' => 'SOL-001',
                 'descripcion' => 'Descripción de la solicitud 1',
-                'fecha_recepcion' => '2023-10-04',
                 'cliente_id' => 1, // ID del cliente relacionado
-                'longitud' => 12345,
-                'latitud' => 67890,
+                'longitud' => "12345",
+                'latitud' => "67890",
+                'created_at' => now()
             ],
             [
                 'tipo_soporte_id' => 2, // ID del tipo de soporte
                 'no_soporte' => 'SOL-002',
                 'descripcion' => 'Descripción de la solicitud 2',
-                'fecha_recepcion' => '2023-10-05',
                 'cliente_id' => 2, // ID del cliente relacionado
-                'longitud' => 54321,
-                'latitud' => 98765,
+                'longitud' => "54321",
+                'latitud' => "98765",
+                'created_at' => now()
             ],
             // Agregar más registros de solicitudes aquí
         ];

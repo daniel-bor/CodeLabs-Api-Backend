@@ -27,7 +27,7 @@ class ClienteController extends Controller
     public function listarSolicitudes($cliente_id)
     {
         // Obtener todas las solicitudes del cliente
-        $solicitudes = Solicitud::where('cliente_id', $cliente_id)->get();
+        $solicitudes = Solicitud::with('itemsSolicitados')->where('cliente_id', $cliente_id)->get();
 
         return response()->json(['data' => $solicitudes], 200);
     }
@@ -35,7 +35,7 @@ class ClienteController extends Controller
     public function verSolicitud($cliente_id, $solicitud_id)
     {
         // Obtener una solicitud específica del cliente
-        $solicitud = Solicitud::where('cliente_id', $cliente_id)->findOrFail($solicitud_id);
+        $solicitud = Solicitud::with('itemsSolicitados')->where('cliente_id', $cliente_id)->findOrFail($solicitud_id);
 
         return response()->json(['data' => $solicitud], 200);
     }
