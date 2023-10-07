@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ItemsSolicitudAnalisis extends Model
 {
     use HasFactory;
+    protected $table = 'items_solicitud_analisis';
 
     // Relación con la solicitud asociada
     public function solicitud()
@@ -20,4 +21,10 @@ class ItemsSolicitudAnalisis extends Model
     {
         return $this->belongsTo(Item::class, 'item_id');
     }
+
+    protected $fillable = [
+        'solicitud_id',
+        'item_id',
+        'estado'
+    ];
 }
