@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamenController;
@@ -22,8 +23,14 @@ use App\Http\Controllers\TipoSoporteController;
 //     return $request->user();
 // });
 
+//Login
+// Ruta para el inicio de sesión (login)
+Route::post('login', [AuthController::class, 'login']);
+// Ruta para el cierre de sesión (logout)
+Route::post('logout', [AuthController::class, 'logout']);
+
 //Utilidades de Interfaz
-Route::get('/soportes', [TipoSoporteController::class, 'index']);
+Route::middleware('jwt.auth')->get('/soportes', [TipoSoporteController::class, 'index']);
 Route::get('/examenes', [ExamenController::class, 'index']);
 
 //Clientes

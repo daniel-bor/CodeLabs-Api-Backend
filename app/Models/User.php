@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -65,5 +69,22 @@ class User extends Authenticatable
     public function encabezadosBitacora()
     {
         return $this->hasMany(EncabezadoBitacora::class, 'usuario_id');
+    }
+
+    // Implementación de las funciones de la interfaz JWTSubject
+    // Implementación de la función getJWTIdentifier
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    // Implementación de la función getJWTCustomClaims
+    public function getJWTCustomClaims()
+    {
+        return [
+            'user_id' => $this->id,
+            'email' => $this->email,
+            // Puedes agregar más reclamaciones personalizadas aquí según tus necesidades.
+        ];
     }
 }
