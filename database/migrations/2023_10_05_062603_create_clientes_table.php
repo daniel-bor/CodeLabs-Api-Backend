@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('usuario_id')->unique();
             $table->string('nit', 9)->notNull()->unique();
             $table->string('profesion', 50)->notNull();
+            $table->string('NoExpediente', 22)->notNull();
             $table->timestamp('fecha_creacion')->default(now());
 
             // Definición de clave foránea

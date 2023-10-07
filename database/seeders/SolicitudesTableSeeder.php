@@ -17,6 +17,7 @@ class SolicitudesTableSeeder extends Seeder
         $solicitudes = [
             [
                 'tipo_soporte_id' => 1, // ID del tipo de soporte
+                'codigo_solicitud' => 'IN-12345678-20231001',
                 'no_soporte' => 'SOL-001',
                 'descripcion' => 'Descripción de la solicitud 1',
                 'cliente_id' => 1, // ID del cliente relacionado
@@ -26,6 +27,7 @@ class SolicitudesTableSeeder extends Seeder
             ],
             [
                 'tipo_soporte_id' => 2, // ID del tipo de soporte
+                'codigo_solicitud' => 'EX-87654321-20231001',
                 'no_soporte' => 'SOL-002',
                 'descripcion' => 'Descripción de la solicitud 2',
                 'cliente_id' => 2, // ID del cliente relacionado

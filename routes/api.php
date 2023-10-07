@@ -42,3 +42,4 @@ Route::get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteControll
 //Solicitudes
 Route::post('/solicitudes', [SolicitudController::class, 'store']);
 Route::get('/solicitudes', [SolicitudController::class, 'index']);
+Route::get('/solicitudesListado', [SolicitudController::class, 'buscarSolicitudes']);

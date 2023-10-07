@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tipo_soporte_id')->notNull();
+            $table->string('codigo_solicitud')->notNull();
             $table->string('no_soporte', 50)->notNull();
             $table->string('descripcion', 100)->notNull();
             $table->unsignedBigInteger('cliente_id')->notNull();
