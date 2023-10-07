@@ -32,4 +32,9 @@ class Muestra extends Model
     {
         return $this->belongsTo(Solicitud::class, 'solicitud_id');
     }
+
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item');
+    }
 }

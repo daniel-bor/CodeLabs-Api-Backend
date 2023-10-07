@@ -16,18 +16,19 @@ return new class extends Migration
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tipo_soporte_id')->notNull();
-            $table->string('codigo_solicitud')->notNull();
+            $table->string('codigo', 20)->notNull();
             $table->string('no_soporte', 50)->notNull();
             $table->string('descripcion', 100)->notNull();
             $table->unsignedBigInteger('cliente_id')->notNull();
             $table->string('longitud')->notNull();
             $table->string('latitud')->notNull();
-            $table->integer('estado')->default(1);
+            $table->unsignedBigInteger('estado')->notNull()->default(1);
             $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('tipo_soporte_id')->references('id')->on('tipo_soportes');
             $table->foreign('cliente_id')->references('usuario_id')->on('clientes');
+            $table->foreign('estado')->references('id')->on('estado_solicitudes');
         });
     }
 

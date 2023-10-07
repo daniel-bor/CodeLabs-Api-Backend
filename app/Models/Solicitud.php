@@ -25,7 +25,9 @@ class Solicitud extends Model
     //Relacion de usuario que esta asignado
     public function usuarioasignado()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id');
+        return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
+        ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
+        ->limit(1); // Limita a un solo registro (el más reciente)
     }
 
     //Relacion para el estado de solicitud
@@ -47,6 +49,14 @@ class Solicitud extends Model
         return $this->belongsToMany(itemsMuestra::class, 'muestras', 'solicitud_id', 'id');
     }
 
+
+    public function usuarioAsignador()
+    {
+        return $this->belongsToMany(User::class, 'usuario_asignaciones', 'solicitud_id', 'usuario_asignador_id')
+            ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
+            ->limit(1); // Limita a un solo registro (el más reciente)
+    }
+
     //Relacion para obtener la cantidad de documento delas muestras
     public function documentosMuestra()
     {
@@ -62,6 +72,7 @@ class Solicitud extends Model
         'cliente_id',
         'cliente_id',
         'longitud',
-        'latitud'
+        'latitud',
+        'codigo'
     ];
 }

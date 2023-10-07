@@ -23,6 +23,8 @@ use App\Http\Controllers\TipoSoporteController;
 //     return $request->user();
 // });
 
+//Registro de usuarios
+Route::post('register', [AuthController::class, 'register']);
 //Login
 // Ruta para el inicio de sesión (login)
 Route::post('login', [AuthController::class, 'login']);
@@ -34,12 +36,15 @@ Route::middleware('jwt.auth')->get('/soportes', [TipoSoporteController::class, '
 Route::get('/examenes', [ExamenController::class, 'index']);
 
 //Clientes
-Route::get('/clientes', [ClienteController::class, 'index']);
-Route::get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
-Route::get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
-Route::get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
+Route::middleware('jwt.auth')->get('/clientes', [ClienteController::class, 'index']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
 
 //Solicitudes
 Route::post('/solicitudes', [SolicitudController::class, 'store']);
 Route::get('/solicitudes', [SolicitudController::class, 'index']);
 Route::get('/solicitudesListado', [SolicitudController::class, 'buscarSolicitudes']);
+Route::middleware('jwt.auth')->post('/solicitudes', [SolicitudController::class, 'store']);
+Route::middleware('jwt.auth')->get('/solicitudes', [SolicitudController::class, 'index']);
+Route::middleware('jwt.auth')->get('/solicitudes/{solicitud_id}/detalle', [SolicitudController::class, 'getDetalle']);

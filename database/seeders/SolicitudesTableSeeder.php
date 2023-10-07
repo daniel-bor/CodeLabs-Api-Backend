@@ -17,7 +17,7 @@ class SolicitudesTableSeeder extends Seeder
         $solicitudes = [
             [
                 'tipo_soporte_id' => 1, // ID del tipo de soporte
-                'codigo_solicitud' => 'IN-12345678-20231001',
+                'codigo' => 'EX-07102023-86372',
                 'no_soporte' => 'SOL-001',
                 'descripcion' => 'Descripción de la solicitud 1',
                 'cliente_id' => 1, // ID del cliente relacionado
@@ -27,7 +27,7 @@ class SolicitudesTableSeeder extends Seeder
             ],
             [
                 'tipo_soporte_id' => 2, // ID del tipo de soporte
-                'codigo_solicitud' => 'EX-87654321-20231001',
+                'codigo' => 'EX-07102023-86373',
                 'no_soporte' => 'SOL-002',
                 'descripcion' => 'Descripción de la solicitud 2',
                 'cliente_id' => 2, // ID del cliente relacionado
@@ -35,7 +35,6 @@ class SolicitudesTableSeeder extends Seeder
                 'latitud' => "98765",
                 'created_at' => now()
             ],
-            // Agregar más registros de solicitudes aquí
         ];
 
         // Insertar los registros en la tabla solicitudes
