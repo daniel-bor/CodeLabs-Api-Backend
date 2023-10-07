@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UsuarioAsignacion extends Model
 {
     use HasFactory;
+    protected $table = 'usuario_asignaciones';
 
     // Relación con el usuario asignado
     public function usuarioAsignado()
