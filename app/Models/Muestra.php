@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Muestra extends Model
 {
     use HasFactory;
-
+    protected $table = 'muestras';
     // Relación con el tipo de muestra
     public function tipoMuestra()
     {

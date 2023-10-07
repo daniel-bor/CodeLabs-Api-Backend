@@ -42,6 +42,9 @@ Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes', [Client
 Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
 
 //Solicitudes
+Route::post('/solicitudes', [SolicitudController::class, 'store']);
+Route::get('/solicitudes', [SolicitudController::class, 'index']);
+Route::get('/solicitudesListado', [SolicitudController::class, 'buscarSolicitudes']);
 Route::middleware('jwt.auth')->post('/solicitudes', [SolicitudController::class, 'store']);
 Route::middleware('jwt.auth')->get('/solicitudes', [SolicitudController::class, 'index']);
 Route::middleware('jwt.auth')->get('/solicitudes/{solicitud_id}/detalle', [SolicitudController::class, 'getDetalle']);

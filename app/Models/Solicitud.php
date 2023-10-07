@@ -19,25 +19,36 @@ class Solicitud extends Model
     // Relación con el cliente que realiza la solicitud
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id', 'usuario_id');
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'id');
     }
 
-    public function itemsSolicitados()
+    //Relacion de usuario que esta asignado
+    public function usuarioasignado()
     {
-        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+        return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
+        ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
+        ->limit(1); // Limita a un solo registro (el más reciente)
     }
 
+    //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {
-        return $this->belongsTo(EstadoSolicitud::class, 'estado_solicitudes', 'estado', 'id');
+        return $this->belongsTo(estadoSolicitud::class, 'id', 'id');
     }
 
-    public function usuarioAsignado()
+
+    //Relacion para mostrar la cantidad de muestras
+    public function muestra()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones', 'solicitud_id', 'usuario_asignado_id')
-            ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
-            ->limit(1); // Limita a un solo registro (el más reciente)
+        return $this->hasMany(Muestra::class, 'solicitud_id');
     }
+ 
+    // Relacion para obtener los item de las muestras relacionadas a la solicitud
+    public function itemsSolicitados()
+    {
+        return $this->belongsToMany(itemsMuestra::class, 'muestras', 'solicitud_id', 'id');
+    }
+
 
     public function usuarioAsignador()
     {
@@ -46,21 +57,19 @@ class Solicitud extends Model
             ->limit(1); // Limita a un solo registro (el más reciente)
     }
 
-    public function muestras()
+    //Relacion para obtener la cantidad de documento delas muestras
+    public function documentosMuestra()
     {
-        return $this->hasMany(Muestra::class, 'solicitud_id');
+        return $this->hasMany(Documento::class, 'solicitud_id', 'id');
     }
 
-    public function documentos()
-    {
-        return $this->hasMany(Documento::class, 'solicitud_id');
-    }
-
+   
 
     protected $fillable = [
         'tipo_soporte_id',
         'no_soporte',
         'descripcion',
+        'cliente_id',
         'cliente_id',
         'longitud',
         'latitud',

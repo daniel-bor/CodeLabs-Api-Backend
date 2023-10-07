@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EstadoSolicitud extends Model
 {
     use HasFactory;
-
+    protected $table = 'estado_solicitudes';
     // Relación con el usuario que creó este tipo de examen
     public function creadoPor()
     {
