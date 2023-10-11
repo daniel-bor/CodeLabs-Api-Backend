@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoSoportesTableSeeder::class);
         $this->call(TipoExamenesTableSeeder::class);
         $this->call(UnidadMedidasTableSeeder::class);
+        $this->call(EstadoSolicitudesTableSeeder::class);
         $this->call(SolicitudesTableSeeder::class);
 
         // Seeders para tablas intermedias o relacionadas
         $this->call(ItemsTableSeeder::class);
         $this->call(TipoMuestraTableSeeder::class);
         $this->call(TipoRecipienteMuestraTableSeeder::class);
-        $this->call(EstadoSolicitudesTableSeeder::class);
         $this->call(DepartamentosTableSeeder::class);
         $this->call(TipoDocumentoAnalisisTableSeeder::class);
         $this->call(MuestrasTableSeeder::class);

@@ -15,8 +15,9 @@ class ClientesTableSeeder extends Seeder
     {
         // Definir los 10 registros de clientes
         $clientes = [
-            ['usuario_id' => 1, 'nit' => '123456789', 'profesion' => 'Abogado'],
+            ['usuario_id' => 1, 'nit' => '123456789', 'profesion' => 'Ingeniero'],
             ['usuario_id' => 2, 'nit' => '987654321', 'profesion' => 'Ingeniero'],
+            ['usuario_id' => 3, 'nit' => '871632876', 'profesion' => 'Ingeniero'],
             // Agregar otros clientes aquí
         ];
 
