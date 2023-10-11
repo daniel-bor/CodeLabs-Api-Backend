@@ -24,7 +24,7 @@ class SolicitudController extends Controller
       $resultados = $solicitudes->map(function ($item){
         $usuarioAsignado = $item->usuarioasignado->last(); // Obtener el primer usuario asignado
         $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
-        
+
         //estado de la solicitud
         $solicitudEstado = $item->estadoSolicitud; // Obtener el primer usuario asignado
         $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
@@ -48,6 +48,14 @@ class SolicitudController extends Controller
 
     public function buscarSolicitudes(Request $request)
     {
+        try {
+            $request->validate([
+                'CodigoSolicitud' => 'codigo_solicitud'
+            ]);
+        } catch (ValidationException $e) {
+            // En caso de validación fallida, se devuelve la respuesta con los errores
+            return response()->json(['errors' => $e->errors()], 422);
+        }
         // Obtener los valores de los parámetros de consulta
         $CodigoSolicitud = $request->query('CodigoSolicitud');
         $NoExpendiente = $request->query('NoExpediente');
@@ -74,34 +82,34 @@ class SolicitudController extends Controller
             if (!empty($NoExpendiente)) {
                 $query->where('tipo_soporte_id', $NoExpendiente);
             }
-    
+
             if (!empty($NoSoporte)) {
                 $query->where('no_soporte', $NoSoporte);
             }
-    
+
             if (!empty($UsuarioAsignacion)) {
                 $query->where('UsuarioAsignacion', $UsuarioAsignacion);
             }
-    
+
             if (!empty($FechaCreacion)) {
                 $query->where('fecha_creacion', $FechaCreacion);
             }
-    
+
             if (!empty($NIT)) {
                 $query->where('NIT', $NIT);
             }
-    
+
             if (!empty($EstadoSolicitud)) {
                 $query->where('EstadoSolicitud', $EstadoSolicitud);
             }
         }
 
-        
-       
+
+
         $resultados = $query->get()->map(function ($item){
             $usuarioAsignado = $item->usuarioasignado->last(); // Obtener el primer usuario asignado
             $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
-            
+
             //estado de la solicitud
             $solicitudEstado = $item->estadoSolicitud; // Obtener el primer usuario asignado
             $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;

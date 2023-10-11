@@ -20,7 +20,6 @@ class ClientesTableSeeder extends Seeder
             ['usuario_id' => 3, 'nit' => '871632876', 'profesion' => 'Ingeniero','NoExpediente' => '3'],
             // Agregar otros clientes aquí
         ];
-
         // Insertar los registros en la tabla clientes
         DB::table('clientes')->insert($clientes);
     }
