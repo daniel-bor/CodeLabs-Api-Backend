@@ -50,12 +50,20 @@ class SolicitudController extends Controller
     {
         try {
             $request->validate([
-                'CodigoSolicitud' => 'codigo_solicitud'
+                'CodigoSolicitud' => 'codigo_solicitud',
+                'NoExpediente' => 'Numero_expediente',
+                'NoSoporte' => 'alpha_num|min:3|max:50',
+                'Fecha_Creacion' =>'Fecha_Creacion',
+                'NoExpediente' => 'exists:tipo_examenes,id',
+                'UsuarioAsignacion' =>'Usuario_Asignacion',
+                'EstadoSolicitud' =>'exists:estado_solicitudes,id',
+                'NIT' =>'alpha_num|min:2|max:11',
             ]);
         } catch (ValidationException $e) {
             // En caso de validación fallida, se devuelve la respuesta con los errores
             return response()->json(['errors' => $e->errors()], 422);
         }
+        
         // Obtener los valores de los parámetros de consulta
         $CodigoSolicitud = $request->query('CodigoSolicitud');
         $NoExpendiente = $request->query('NoExpediente');
@@ -77,7 +85,7 @@ class SolicitudController extends Controller
 
         // Aplicar condiciones en función de las variables
         if (!empty($CodigoSolicitud)) {
-            $query->where('codigo_solicitud', $CodigoSolicitud);
+            $query->where('codigo', $CodigoSolicitud);
         }else{
             if (!empty($NoExpendiente)) {
                 $query->where('tipo_soporte_id', $NoExpendiente);
@@ -100,7 +108,7 @@ class SolicitudController extends Controller
             }
 
             if (!empty($EstadoSolicitud)) {
-                $query->where('EstadoSolicitud', $EstadoSolicitud);
+                $query->where('estado', $EstadoSolicitud);
             }
         }
 
