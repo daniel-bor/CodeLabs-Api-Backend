@@ -9,146 +9,85 @@ use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
 {
-    public function index()
-    {
-        // Iniciar la consulta con el modelo Solicitud
-        $solicitudes = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
-            ->with('itemsSolicitados')
-            ->with('usuarioasignado')
-            ->with('estadoSolicitud')
-            ->with('muestra')
-            ->with('itemsSolicitados')
-            ->with('documentosMuestra')
-            ->with('cliente')->get();
-
-        $resultados = $solicitudes->map(function ($item) {
-            $usuarioAsignado = $item->usuarioasignado->last(); // Obtener el primer usuario asignado
-            $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
-
-            //estado de la solicitud
-            $solicitudEstado = $item->estadoSolicitud; // Obtener el primer usuario asignado
-            $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
-            return [
-                'id' => $item->id,
-                'codigo' => $item->codigo,
-                'NoExpediente' => $item->Cliente->NoExpediente,
-                'nit' => $item->cliente->nit,
-                'no_soporte' => $item->no_soporte,
-                'TipoExamen' => $item->itemsSolicitados,
-                'UsuarioAsigando' => $nombreUsuarioAsignado,
-                'estadoSolicitud' => $nombresolicitudEstado,
-                'FechaCreacion' => $item->created_at,
-                'CantidadMuestra' => $item->muestra->count(),
-                'CantidadItemMuestra' => $item->itemsSolicitados->count(),
-                'CantidadDocumento' => $item->documentosMuestra->count(),
-            ];
-        });
-        return response()->json(['data' => $solicitudes], 200);
-    }
-
-    public function buscarSolicitudes(Request $request)
+    public function index(Request $request)
     {
         try {
             $request->validate([
-                'CodigoSolicitud' => 'codigo_solicitud',
-                'NoExpediente' => 'Numero_expediente',
-                'NoSoporte' => 'alpha_num|min:3|max:50',
-                'Fecha_Creacion' => 'Fecha_Creacion',
-                'NoExpediente' => 'exists:tipo_examenes,id',
-                'UsuarioAsignacion' => 'Usuario_Asignacion',
+                'CodigoSolicitud' => 'string|codigo_solicitud',
+                'NoExpediente' => 'string|numero_expediente',
+                'NoSoporte' => 'string|min:3|max:50',
+                'FechaCreacion' => 'date_format:yyyy-mm-dd+yyyy-mm-dd',
+                'NIT' => 'digits_between:3,12',
                 'EstadoSolicitud' => 'exists:estado_solicitudes,id',
-                'NIT' => 'alpha_num|min:2|max:11',
             ]);
+
         } catch (ValidationException $e) {
-            // En caso de validación fallida, se devuelve la respuesta con los errores
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // Obtener los valores de los parámetros de consulta
-        $CodigoSolicitud = $request->query('CodigoSolicitud');
-        $NoExpendiente = $request->query('NoExpediente');
-        $NoSoporte = $request->query('NoSoporte');
-        $UsuarioAsignacion = $request->query('UsuarioAsignacion');
-        $FechaCreacion = $request->query('FechaCreacion');
-        $NIT = $request->query('NIT');
-        $EstadoSolicitud = $request->query('EstadoSolicitud');
-
-        // Iniciar la consulta con el modelo Solicitud
-        $query = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
+        $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
             ->with('itemsSolicitados')
             ->with('usuarioasignado')
             ->with('estadoSolicitud')
-            ->with('muestra')
+            ->with('muestras')
             ->with('itemsSolicitados')
             ->with('documentosMuestra')
-            ->with('cliente');
+            ->with('cliente')
+            ->when($request->has('CodigoSolicitud'), function ($query) use ($request) {
+                return $query->where('codigo', $request->input('CodigoSolicitud'));
+            })
+            ->when($request->has('NoExpediente'), function ($query) use ($request) {
+                return $query->where('tipo_soporte_id', $request->input('NoExpediente'));
+            })
+            ->when($request->has('NoSoporte'), function ($query) use ($request) {
+                return $query->where('no_soporte', $request->input('NoSoporte'));
+            })
+            ->when($request->has('UsuarioAsignacion'), function ($query) use ($request) {
+                return $query->where('UsuarioAsignacion', $request->input('UsuarioAsignacion'));
+            })
+            ->when($request->has('FechaCreacion'), function ($query) use ($request) {
+                $fechas = explode('-', $request->input('FechaCreacion'));
+                $fechaInicio = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[0]));
+                $fechaFin = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[1]));
+                return $query->whereBetween('fecha_creacion', [$fechaInicio, $fechaFin]);
+            })
+            ->when($request->has('NIT'), function ($query) use ($request) {
+                // Utiliza una subconsulta para obtener el NIT desde la tabla cliente
+                $query->whereHas('cliente', function ($clienteQuery) use ($request) {
+                    $clienteQuery->where('nit', $request->input('NIT'));
+                });
+            })
+            ->when($request->has('EstadoSolicitud'), function ($query) use ($request) {
+                return $query->where('estado', $request->input('EstadoSolicitud'));
+            })
+            ->get()
+            ->map(function ($item) {
+                $usuarioAsignado = $item->usuarioasignado->last();
+                $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
 
-        // Aplicar condiciones en función de las variables
-        if (!empty($CodigoSolicitud)) {
-            $query->where('codigo', $CodigoSolicitud);
-        } else {
-            if (!empty($NoExpendiente)) {
-                $query->where('tipo_soporte_id', $NoExpendiente);
-            }
+                $solicitudEstado = $item->estadoSolicitud;
+                $nombreSolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
 
-            if (!empty($NoSoporte)) {
-                $query->where('no_soporte', $NoSoporte);
-            }
+                return [
+                    'id' => $item->id,
+                    'codigo' => $item->codigo,
+                    'NoExpediente' => $item->cliente->NoExpediente,
+                    'nit' => $item->cliente->nit,
+                    'no_soporte' => $item->no_soporte,
+                    'TipoExamen' => $item->itemsSolicitados,
+                    'UsuarioAsignado' => $nombreUsuarioAsignado,
+                    'estadoSolicitud' => $nombreSolicitudEstado,
+                    'FechaCreacion' => $item->created_at,
+                    'CantidadMuestra' => $item->muestras->count(),
+                    'CantidadItemMuestra' => $item->itemsSolicitados->count(),
+                    'CantidadDocumento' => $item->documentosMuestra->count(),
+                ];
+            });
 
-            if (!empty($UsuarioAsignacion)) {
-                $query->where('UsuarioAsignacion', $UsuarioAsignacion);
-            }
-
-            if (!empty($FechaCreacion)) {
-                // Separa las fechas usando el guión
-                $fechas = explode('-', $FechaCreacion);
-
-                if (count($fechas) === 2) {
-                    $fechaInicio = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[0]));
-                    $fechaFin = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[1]));
-
-                    // Luego, puedes aplicar la consulta con whereBetween
-                    $query->whereBetween('fecha_creacion', [$fechaInicio, $fechaFin]);
-                }
-            }
-
-            if (!empty($NIT)) {
-                $query->where('NIT', $NIT);
-            }
-
-            if (!empty($EstadoSolicitud)) {
-                $query->where('estado', $EstadoSolicitud);
-            }
-        }
-
-
-
-        $resultados = $query->get()->map(function ($item) {
-            $usuarioAsignado = $item->usuarioasignado->last(); // Obtener el primer usuario asignado
-            $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
-
-            //estado de la solicitud
-            $solicitudEstado = $item->estadoSolicitud; // Obtener el primer usuario asignado
-            $nombresolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
-            return [
-                'id' => $item->id,
-                'codigo' => $item->codigo,
-                'NoExpediente' => $item->Cliente->NoExpediente,
-                'nit' => $item->cliente->nit,
-                'no_soporte' => $item->no_soporte,
-                'TipoExamen' => $item->itemsSolicitados,
-                'UsuarioAsigando' => $nombreUsuarioAsignado,
-                'estadoSolicitud' => $nombresolicitudEstado,
-                'FechaCreacion' => $item->created_at,
-                'CantidadMuestra' => $item->muestra->count(),
-                'CantidadItemMuestra' => $item->itemsSolicitados->count(),
-                'CantidadDocumento' => $item->documentosMuestra->count(),
-            ];
-        });
-
-        // Puedes retornar los resultados como JSON u otra representación según tus necesidades
         return response()->json(['data' => $resultados], 200);
     }
+
+
     public function store(Request $request)
     {
         try {

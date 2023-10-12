@@ -25,12 +25,12 @@ class AppServiceProvider extends ServiceProvider
             return preg_match('/^(EX|IN)-\d{8}-\d{5}$/', $value);
         });
 
-        Validator::extend('Numero_expediente', function ($attribute, $value, $parameters, $validator) {
-            // La lógica de validación personalizada aquí
-            return preg_match('/^\d{4}-\d{2}-\d{2}-\d{2}-\d{7}$/', $value);
+        // Validación de número de expediente para el siguiente formato: 7590-22-14705 (12 dígitoss)
+        Validator::extend('numero_expediente', function ($attribute, $value, $parameters, $validator) {
+            return preg_match('/^\d{4}-\d{2}-\d{5}$/', $value);
         });
 
-        Validator::extend('Fecha_Creacion', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('fecha_creacion', function ($attribute, $value, $parameters, $validator) {
             // Divide la cadena en dos partes usando el guion como separador
             $partes = explode('-', $value);
 
@@ -71,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
             return true;
         });
 
-        Validator::extend('Usuario_Asignacion', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('usuario_asignacion', function ($attribute, $value, $parameters, $validator) {
             // La lógica de validación personalizada aquí
             return preg_match('/^[a-zA-Z]{8,12}$/', $value);
         });
