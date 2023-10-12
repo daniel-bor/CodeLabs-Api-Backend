@@ -38,11 +38,11 @@ class Solicitud extends Model
 
 
     //Relacion para mostrar la cantidad de muestras
-    public function muestra()
+    public function muestras()
     {
         return $this->hasMany(Muestra::class, 'solicitud_id');
     }
- 
+
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
@@ -63,7 +63,11 @@ class Solicitud extends Model
         return $this->hasMany(Documento::class, 'solicitud_id', 'id');
     }
 
-   
+    public function documentos()
+    {
+        return $this->hasMany(Documento::class, 'solicitud_id');
+    }
+
 
     protected $fillable = [
         'tipo_soporte_id',
