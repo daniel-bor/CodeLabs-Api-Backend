@@ -26,12 +26,8 @@ class SolicitudController extends Controller
         }
 
         $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
-            ->with('itemsSolicitados')
             ->with('usuarioasignado')
             ->with('estadoSolicitud')
-            ->with('muestras')
-            ->with('itemsSolicitados')
-            ->with('documentosMuestra')
             ->with('cliente')
             ->when($request->has('CodigoSolicitud'), function ($query) use ($request) {
                 return $query->where('codigo', $request->input('CodigoSolicitud'));
@@ -62,9 +58,6 @@ class SolicitudController extends Controller
             })
             ->get()
             ->map(function ($item) {
-                $usuarioAsignado = $item->usuarioasignado->last();
-                $nombreUsuarioAsignado = $usuarioAsignado ? $usuarioAsignado->name : null;
-
                 $solicitudEstado = $item->estadoSolicitud;
                 $nombreSolicitudEstado = $solicitudEstado ? $solicitudEstado->nombre : null;
 
@@ -74,13 +67,9 @@ class SolicitudController extends Controller
                     'NoExpediente' => $item->cliente->NoExpediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'TipoExamen' => $item->itemsSolicitados,
-                    'UsuarioAsignado' => $nombreUsuarioAsignado,
+                    'UsuarioAsignado' => $item->usuarioAsignado[0]->name ?? '',
                     'estadoSolicitud' => $nombreSolicitudEstado,
                     'FechaCreacion' => $item->created_at,
-                    'CantidadMuestra' => $item->muestras->count(),
-                    'CantidadItemMuestra' => $item->itemsSolicitados->count(),
-                    'CantidadDocumento' => $item->documentosMuestra->count(),
                 ];
             });
 
