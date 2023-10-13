@@ -47,5 +47,16 @@ class UsersTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        DB::table('users')->insert([
+            'name' => 'Oswaldo Bor',
+            'email' => 'osxbor123@gmail.com',
+            'email_verified_at' => now(),
+            'telefono' => "99999999",
+            'password' => Hash::make('123456789'),
+            'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
