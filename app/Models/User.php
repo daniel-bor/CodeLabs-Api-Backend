@@ -55,11 +55,7 @@ class User extends Authenticatable implements AuthenticatableContract, Authoriza
     }
 
     // Relación con la tabla "clientes"
-    public function cliente()
-    {
-        return $this->hasOne(Cliente::class, 'usuario_id');
-    }
-
+  
     // Relación con la tabla "roles"
     public function rol()
     {
