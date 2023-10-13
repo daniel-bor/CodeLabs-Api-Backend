@@ -16,7 +16,10 @@ class RolesTableSeeder extends Seeder
         // Definir los 10 registros de roles
         $roles = [
             ['nombre' => 'Administrador', 'descripcion' => 'Rol de administrador'],
-            ['nombre' => 'Usuario', 'descripcion' => 'Rol de usuario'],
+            ['nombre' => 'Revisor', 'descripcion' => 'Rol de revisor'],
+            ['nombre' => 'Tecnico', 'descripcion' => 'Rol de técnico'],
+            ['nombre' => 'Asignador', 'descripcion' => 'Rol de asignador'],
+            ['nombre' => 'Analista', 'descripcion' => 'Rol de analista']
             // Agregar otros roles aquí
         ];
 
