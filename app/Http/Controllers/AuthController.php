@@ -51,7 +51,6 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:6',
             ]);
-
         } catch (ValidationException $e) {
             // La validación ha fallado
             $errors = $e->validator->errors()->messages();
@@ -69,18 +68,17 @@ class AuthController extends Controller
             $user->save();
 
             // Crear un nuevo cliente
-            $cliente = new Cliente([
+            Cliente::created([
                 'usuario_id' => $user->id,
                 'nit ' => $request->nit,
                 'profesion ' => $request->profesion
             ]);
-            $cliente->save();
+
+            return response()->json(['message' => 'Registro exitoso'], 201);
 
             // Opcional: Puedes generar un token JWT para el usuario registrado si deseas que inicien sesión automáticamente
             // use JWTAuth; // Importa JWTAuth al principio del controlador
             // $token = JWTAuth::fromUser($user);
-
-            return response()->json(['message' => 'Registro exitoso'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'No se pudo registrar el usuario'], 500);
         }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('tax_name', 100)->nullable();
             $table->string('profesion', 50)->notNull();
             $table->string('no_expediente', 22)->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
+            $table->timestamps();
 
             // Definición de clave foránea
             $table->foreign('usuario_id')->references('id')->on('users');
