@@ -23,7 +23,7 @@ class SolicitudesTableSeeder extends Seeder
                 'cliente_id' => 1, // ID del cliente relacionado
                 'longitud' => "12345",
                 'latitud' => "67890",
-                'created_at' => now()
+                'created_at' => now()->subDays(2)
             ],
             [
                 'tipo_soporte_id' => 2, // ID del tipo de soporte

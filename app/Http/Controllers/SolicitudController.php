@@ -168,6 +168,7 @@ class SolicitudController extends Controller
         $response = [
             'id' => $solicitud->id,
             'estado_actual' => $solicitud->estadoSolicitud->nombre,
+            'tiempo_total' => $solicitud->created_at->longAbsoluteDiffForHumans(now()),
             'trazabilidad' => [],
         ];
 
