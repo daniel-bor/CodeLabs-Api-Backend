@@ -23,7 +23,7 @@ class Solicitud extends Model
     }
 
     //Relacion de usuario que esta asignado
-    public function usuarioasignado()
+    public function usuarioAsignado()
     {
         return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
         ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
@@ -33,7 +33,7 @@ class Solicitud extends Model
     //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {
-        return $this->belongsTo(estadoSolicitud::class, 'id', 'id');
+        return $this->belongsTo(EstadoSolicitud::class, 'id', 'id');
     }
 
 
@@ -46,7 +46,13 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
-        return $this->belongsToMany(itemsMuestra::class, 'muestras', 'solicitud_id', 'id');
+        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+    }
+
+    // Relacion para obtener los item de las muestras relacionadas a las muestras de solicitud
+    public function itemsMuestras()
+    {
+        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
     }
 
 
@@ -74,7 +80,7 @@ class Solicitud extends Model
         'no_soporte',
         'descripcion',
         'cliente_id',
-        'cliente_id',
+        'direccion',
         'longitud',
         'latitud',
         'codigo'

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('no_soporte', 50)->notNull();
             $table->string('descripcion', 100)->notNull();
             $table->unsignedBigInteger('cliente_id')->notNull();
+            $table->string('direccion', 100)->notNull();
             $table->string('longitud')->notNull();
             $table->string('latitud')->notNull();
             $table->unsignedBigInteger('estado')->notNull()->default(1);
