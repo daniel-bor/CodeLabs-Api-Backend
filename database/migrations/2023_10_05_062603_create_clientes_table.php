@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('usuario_id')->unique();
-            $table->string('nit', 9)->notNull()->unique();
+            $table->string('nit', 12)->notNull()->unique();
+            $table->string('tax_name', 100)->nullable();
             $table->string('profesion', 50)->notNull();
-            $table->string('NoExpediente', 22)->notNull();
+            $table->string('no_expediente', 22)->notNull();
             $table->timestamp('fecha_creacion')->default(now());
 
             // Definición de clave foránea
