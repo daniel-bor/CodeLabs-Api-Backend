@@ -80,7 +80,7 @@ class Solicitud extends Model
         'no_soporte',
         'descripcion',
         'cliente_id',
-        'cliente_id',
+        'direccion',
         'longitud',
         'latitud',
         'codigo'

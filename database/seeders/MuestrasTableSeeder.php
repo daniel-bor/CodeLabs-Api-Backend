@@ -24,6 +24,7 @@ class MuestrasTableSeeder extends Seeder
                 'solicitud_id' => 1, // ID de la solicitud relacionada
                 'dia_vencimiento' => '2023-12-31',
                 'estado' => true,
+                'created_at' => now()->subDay(1),
             ],
             [
                 'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
@@ -34,6 +35,7 @@ class MuestrasTableSeeder extends Seeder
                 'solicitud_id' => 2, // ID de la solicitud relacionada
                 'dia_vencimiento' => '2023-12-31',
                 'estado' => true,
+                'created_at' => now()->subDay(1),
             ],
             // Agregar más registros de muestras aquí
         ];

@@ -5,8 +5,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamenController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\MuestraController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TipoSoporteController;
+use App\Models\Muestra;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +49,8 @@ Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor'
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalle']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
 Route::get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
+
+//Muestras
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras', [MuestraController::class, 'store']);

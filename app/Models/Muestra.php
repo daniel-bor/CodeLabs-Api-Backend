@@ -12,7 +12,7 @@ class Muestra extends Model
     // Relación con el tipo de muestra
     public function tipoMuestra()
     {
-        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id');
+        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id','id');
     }
 
     // Relación con el tipo de recipiente de muestra
@@ -37,4 +37,15 @@ class Muestra extends Model
     {
         return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item');
     }
+
+    protected $fillable = [
+        'tipo_muestra_id',
+        'tipo_recipiente_muestra_id',
+        'cantidad_unidades',
+        'unidad_medida_id',
+        'etiqueta',
+        'solicitud_id',
+        'dia_vencimiento',
+        'estado',
+    ];
 }

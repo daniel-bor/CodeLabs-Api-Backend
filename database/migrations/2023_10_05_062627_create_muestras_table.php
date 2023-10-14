@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('unidad_medida_id')->notNull();
             $table->string('etiqueta', 50)->notNull();
             $table->unsignedBigInteger('solicitud_id')->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
-            $table->date('dia_vencimiento')->notNull();
+            $table->timestamp('dia_vencimiento')->notNull();
             $table->boolean('estado')->default(true);
+            $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('tipo_muestra_id')->references('id')->on('tipo_muestra');

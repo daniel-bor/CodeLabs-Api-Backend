@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UnidadMedida extends Model
 {
     use HasFactory;
+    protected $table = 'unidad_medidas';
 
     // Relación con el usuario que creó este tipo de examen
     public function creadoPor()
