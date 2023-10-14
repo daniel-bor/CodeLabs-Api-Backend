@@ -44,12 +44,12 @@ class AuthController extends Controller
     {
         try {
             $this->validate($request, [
-                'profesion' => 'string|max:20',
+                'profesion' => 'string|max:50',
                 'nit' => 'required|string|max:12',
                 'telefono' => 'required|string|max:10',
-                'name' => 'required|string|max:20',
+                'name' => 'required|string|max:50',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:6',
+                'password' => 'required|string|min:8',
             ]);
         } catch (ValidationException $e) {
             // La validación ha fallado

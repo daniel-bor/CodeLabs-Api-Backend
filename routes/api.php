@@ -38,6 +38,7 @@ Route::get('/examenes', [ExamenController::class, 'index']);
 //Clientes
 Route::get('/clientes/nit/{nit}', [ClienteController::class, 'getDataClientNit']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes', [ClienteController::class, 'index']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/expediente/{cliente_id}', [ClienteController::class, 'getExpediente']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
