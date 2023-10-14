@@ -64,12 +64,12 @@ class SolicitudController extends Controller
                 return [
                     'id' => $item->id,
                     'codigo' => $item->codigo,
-                    'NoExpediente' => $item->cliente->NoExpediente,
+                    'no_expediente' => $item->cliente->NoExpediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'UsuarioAsignado' => $item->usuarioAsignado[0]->name ?? '',
-                    'estadoSolicitud' => $nombreSolicitudEstado,
-                    'FechaCreacion' => $item->created_at,
+                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? '',
+                    'estado_solicitud' => $nombreSolicitudEstado,
+                    'fecha_creacion' => $item->created_at,
                 ];
             });
 
