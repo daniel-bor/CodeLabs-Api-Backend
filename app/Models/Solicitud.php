@@ -33,7 +33,7 @@ class Solicitud extends Model
     //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {
-        return $this->belongsTo(estadoSolicitud::class, 'id', 'id');
+        return $this->belongsTo(EstadoSolicitud::class, 'id', 'id');
     }
 
 
@@ -46,7 +46,7 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
-        return $this->belongsToMany(itemsMuestra::class, 'muestras', 'solicitud_id', 'id');
+        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
     }
 
 
