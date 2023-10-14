@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TipoRecipienteMuestra extends Model
 {
     use HasFactory;
+    protected $table = 'tipo_recipiente_muestra';
 
     // Relación con el usuario que creó este tipo de examen
     public function creadoPor()

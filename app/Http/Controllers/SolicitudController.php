@@ -65,12 +65,12 @@ class SolicitudController extends Controller
                 return [
                     'id' => $item->id,
                     'codigo' => $item->codigo,
-                    'no_expediente' => $item->cliente->NoExpediente,
+                    'no_expediente' => $item->cliente->no_expediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
                     'usuario_asignado' => $item->usuarioAsignado[0]->name ?? '',
                     'estado_solicitud' => $nombreSolicitudEstado,
-                    'fecha_creacion' => $item->created_at,
+                    'fecha_creacion' => $item->created_at
                 ];
             });
 
@@ -98,22 +98,21 @@ class SolicitudController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // Generar el código
-        $codigo = 'EX-' . now()->format('Ymd') . '-' . Str::random(5);
-        // Agregar el código a los datos validados
-        $validatedData['codigo'] = $codigo;
-        // Creación de la solicitud
-        $solicitud = Solicitud::create($validatedData);
-        // Creación de los elementos de solicitud
-        $items = collect($validatedData['items'])->pluck('id')->all();
-        $solicitud->itemsSolicitados()->attach($items);
-        return response()->json(['message' => 'Solicitud creada correctamente'], 201);
+        try {
+            // Generar el código
+            $codigo = 'EX-' . now()->format('Ymd') . '-' . Str::random(5);
+            // Agregar el código a los datos validados
+            $validatedData['codigo'] = $codigo;
+            // Creación de la solicitud
+            $solicitud = Solicitud::create($validatedData);
+            // Creación de los elementos de solicitud
+            $items = collect($validatedData['items'])->pluck('id')->all();
+            $solicitud->itemsSolicitados()->attach($items);
+            return response()->json(['message' => 'Solicitud creada correctamente'], 201);
 
-        // try {
-
-        // } catch (\Exception $e) {
-        //     return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e]], 500);
-        // }
+        } catch (\Exception $e) {
+            return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e->getMessage()]], 500);
+        }
     }
 
     public function getDetalle($solicitud_id)
@@ -198,5 +197,37 @@ class SolicitudController extends Controller
         }
 
         return response()->json(['data' => $response], 200);
+    }
+
+    public function getMuestras($solicitud_id)
+    {
+        $solicitud = Solicitud::with('muestras')->find($solicitud_id);
+
+        if (!$solicitud) {
+            return response()->json(['message' => 'Solicitud no encontrada'], 404);
+        }
+
+        $response = [
+            'id' => $solicitud->id,
+            'codigo' => $solicitud->codigo,
+            'cliente' => $solicitud->cliente->usuario->name,
+            'fecha_creacion' => $solicitud->created_at,
+            'muestras' => []
+        ];
+
+        foreach ($solicitud->muestras as $muestra) {
+            $muestra = [
+                'id' => $muestra->id,
+                'tipo_muestra' => $muestra->tipoMuestra->nombre,
+                'tipo_recipiente_muestra' => $muestra->tipoRecipienteMuestra->nombre,
+                'cantidad_unidades' => $muestra->cantidad_unidades,
+                'unidad_medida' => $muestra->unidadMedida->nombre,
+                'fecha_vencimiento' => $muestra->dia_vencimiento,
+                'fecha_creacion' => $muestra->created_at,
+                'items' => $muestra->items->pluck('nombre') ?? null
+            ];
+            $response['muestras'][] = $muestra;
+        }
+        return response()->json(['solicitud' => $response], 200);
     }
 }
