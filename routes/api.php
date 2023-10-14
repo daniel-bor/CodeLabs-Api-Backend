@@ -36,12 +36,12 @@ Route::middleware('jwt.auth')->get('/soportes', [TipoSoporteController::class, '
 Route::get('/examenes', [ExamenController::class, 'index']);
 
 //Clientes
-Route::middleware('jwt.auth')->get('/clientes', [ClienteController::class, 'index']);
-Route::middleware('jwt.auth')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
-Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
-Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes', [ClienteController::class, 'index']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
 
 //Solicitudes
-Route::middleware('jwt.auth', 'hasRole:Analista,Asignador')->get('/solicitudes', [SolicitudController::class, 'index']);
-Route::middleware('jwt.auth')->post('/solicitudes', [SolicitudController::class, 'store']);
-Route::middleware('jwt.auth')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalle']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalle']);
