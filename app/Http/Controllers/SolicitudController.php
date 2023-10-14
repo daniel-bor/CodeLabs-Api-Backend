@@ -126,28 +126,32 @@ class SolicitudController extends Controller
 
         // Formatear los datos necesarios
         $datos = [
-            'Codigo solicitud' => $solicitud->codigo ?? '',
-            'No. expediente' => $solicitud->cliente->usuario_id ?? '',
-            'NIT' => $solicitud->cliente->nit ?? '',
-            'No. soporte' => $solicitud->no_soporte ?? '',
-            'Tipo soporte' => $solicitud->tipoSoporte->nombre ?? '',
-            'Usuario asignado' => $solicitud->usuarioAsignado[0]->name ?? '',
-            'Usuario creación' => $solicitud->usuarioAsignador[0]->name ?? '',
-            'Estado solicitud' => $solicitud->estadoSolicitud->nombre ?? '',
-            'Fecha creación' => $solicitud->created_at ?? '',
-            'Muestras' => $solicitud->muestras->map(function ($muestra) {
+            'codigo_solicitud' => $solicitud->codigo ?? '',
+            'no_expediente' => $solicitud->cliente->usuario_id ?? '',
+            'nit' => $solicitud->cliente->nit ?? '',
+            'no_soporte' => $solicitud->no_soporte ?? '',
+            'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? '',
+            'usuario_asignado' => $solicitud->usuarioAsignado[0]->name ?? '',
+            'usuario_creación' => $solicitud->usuarioAsignador[0]->name ?? '',
+            'estado_solicitud' => $solicitud->estadoSolicitud->nombre ?? '',
+            'fecha_creación' => $solicitud->created_at ?? '',
+            'muestras' => $solicitud->muestras->map(function ($muestra) {
                 return [
-                    'ID Muestra' => $muestra->id ?? '',
-                    'Items' => $muestra->items->pluck('nombre') ?? '', // Asumiendo que 'nombre' es el campo que quieres obtener
+                    'muestra_id' => $muestra->id ?? '',
+                    'items' => $muestra->items->pluck('nombre') ?? '', // Asumiendo que 'nombre' es el campo que quieres obtener
                 ];
             }),
-            'Documentos' => $solicitud->documentos->pluck('ruta') ?? '', // Asumiendo que 'ruta' es el campo que quieres obtener
-            'Descripción' => $solicitud->descripcion ?? '',
-            'Solicitante' => $solicitud->cliente->usuario->name ?? '',
-            'Teléfono' => $solicitud->cliente->usuario->telefono ?? '',
-            'Email' => $solicitud->cliente->usuario->email ?? '',
+            'documentos' => $solicitud->documentos->pluck('ruta') ?? '', // Asumiendo que 'ruta' es el campo que quieres obtener
+            'descripción' => $solicitud->descripcion ?? '',
+            'solicitante' => $solicitud->cliente->usuario->name ?? '',
+            'telefono' => $solicitud->cliente->usuario->telefono ?? '',
+            'email' => $solicitud->cliente->usuario->email ?? '',
         ];
 
         return response()->json(['data' => $datos], 200);
+    }
+
+    public function getTrazabilidad($solicitud_id){
+
     }
 }
