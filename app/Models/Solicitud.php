@@ -23,7 +23,7 @@ class Solicitud extends Model
     }
 
     //Relacion de usuario que esta asignado
-    public function usuarioasignado()
+    public function usuarioAsignado()
     {
         return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
         ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente

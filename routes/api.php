@@ -45,4 +45,4 @@ Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor'
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalle']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
+Route::get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
