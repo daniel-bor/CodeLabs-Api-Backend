@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Solicitud;
+use App\Models\TrazabilidadSolicitud;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
@@ -16,17 +18,16 @@ class SolicitudController extends Controller
                 'CodigoSolicitud' => 'string|codigo_solicitud',
                 'NoExpediente' => 'string|numero_expediente',
                 'NoSoporte' => 'string|min:3|max:50',
-                'FechaCreacion' => 'date_format:yyyy-mm-dd+yyyy-mm-dd',
+                'FechaCreacion' => 'date_format:yyyy-mm-dd_yyyy-mm-dd',
                 'NIT' => 'digits_between:3,12',
                 'EstadoSolicitud' => 'exists:estado_solicitudes,id',
             ]);
-
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
         $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
-            ->with('usuarioasignado')
+            ->with('usuarioAsignado')
             ->with('estadoSolicitud')
             ->with('cliente')
             ->when($request->has('CodigoSolicitud'), function ($query) use ($request) {
@@ -151,7 +152,47 @@ class SolicitudController extends Controller
         return response()->json(['data' => $datos], 200);
     }
 
-    public function getTrazabilidad($solicitud_id){
+    public function getTrazabilidad($solicitud_id)
+    {
+        $solicitud = Solicitud::with('estadoSolicitud')->find($solicitud_id);
 
+        if (!$solicitud) {
+            return response()->json(['error' => 'Solicitud no encontrada'], 404);
+        }
+
+        $trazabilidad = TrazabilidadSolicitud::with('estadoSolicitud')
+            ->where('solicitud_id', $solicitud_id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $response = [
+            'id' => $solicitud->id,
+            'estado_actual' => $solicitud->estadoSolicitud->nombre,
+            'trazabilidad' => [],
+        ];
+
+        $trazabilidadCount = count($trazabilidad);
+        for ($i = 0; $i < $trazabilidadCount; $i++) {
+            $trazabilidadItem = $trazabilidad[$i];
+            $nextTrazabilidad = ($i < $trazabilidadCount - 1) ? $trazabilidad[$i + 1] : null;
+
+            $tiempo = ($nextTrazabilidad) ? $nextTrazabilidad->created_at : now();
+            $tiempoDiferencia = Carbon::parse($trazabilidadItem->created_at)->longAbsoluteDiffForHumans($tiempo);
+
+            $trazabilidadData = [
+                'id' => $trazabilidadItem->id,
+                'estado' => $trazabilidadItem->estadoSolicitud->nombre,
+                'observaciones' => $trazabilidadItem->observaciones,
+                'usuario_asignador' => $trazabilidadItem->usuarioAsignador->name ?? null,
+                'usuario_asignado' => $trazabilidadItem->usuarioAsignado->name ?? null,
+                'created_at' => $trazabilidadItem->created_at,
+                'updated_at' => $trazabilidadItem->updated_at,
+                'tiempo' => $tiempoDiferencia
+            ];
+
+            $response['trazabilidad'][] = $trazabilidadData;
+        }
+
+        return response()->json(['data' => $response], 200);
     }
 }
