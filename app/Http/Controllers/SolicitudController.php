@@ -87,6 +87,7 @@ class SolicitudController extends Controller
                 'no_soporte' => 'required|string|max:50',
                 'descripcion' => 'required|string|max:100',
                 'cliente_id' => 'required|exists:clientes,usuario_id',
+                'direccion' => 'required|string|max:100',
                 'longitud' => 'string',
                 'latitud' => 'string',
                 'items' => 'required|array',
@@ -97,20 +98,22 @@ class SolicitudController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        try {
-            // Generar el código
-            $codigo = 'EX-' . now()->format('Ymd') . '-' . Str::random(5);
-            // Agregar el código a los datos validados
-            $validatedData['codigo'] = $codigo;
-            // Creación de la solicitud
-            $solicitud = Solicitud::create($validatedData);
-            // Creación de los elementos de solicitud
-            $items = collect($validatedData['items'])->pluck('id')->all();
-            $solicitud->itemsSolicitados()->attach($items);
-            return response()->json(['message' => 'Solicitud creada correctamente'], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'No se pudo registrar el usuario'], 500);
-        }
+        // Generar el código
+        $codigo = 'EX-' . now()->format('Ymd') . '-' . Str::random(5);
+        // Agregar el código a los datos validados
+        $validatedData['codigo'] = $codigo;
+        // Creación de la solicitud
+        $solicitud = Solicitud::create($validatedData);
+        // Creación de los elementos de solicitud
+        $items = collect($validatedData['items'])->pluck('id')->all();
+        $solicitud->itemsSolicitados()->attach($items);
+        return response()->json(['message' => 'Solicitud creada correctamente'], 201);
+
+        // try {
+
+        // } catch (\Exception $e) {
+        //     return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e]], 500);
+        // }
     }
 
     public function getDetalle($solicitud_id)

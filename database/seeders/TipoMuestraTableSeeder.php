@@ -27,6 +27,18 @@ class TipoMuestraTableSeeder extends Seeder
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
+            [
+                'nombre' => 'Cultivo',
+                'descripcion' => 'Muestra de orina',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
+            ],
+            [
+                'nombre' => 'Eses',
+                'descripcion' => 'Muestra de orina',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
+            ],
             // Agregar más tipos de muestra aquí
         ];
 

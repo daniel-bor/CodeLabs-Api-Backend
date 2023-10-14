@@ -21,6 +21,7 @@ class SolicitudesTableSeeder extends Seeder
                 'no_soporte' => 'SOL-001',
                 'descripcion' => 'Descripción de la solicitud 1',
                 'cliente_id' => 1, // ID del cliente relacionado
+                'direccion' => 'Dirección de la solicitud 1', // Agregamos la dirección
                 'longitud' => "12345",
                 'latitud' => "67890",
                 'created_at' => now()->subDays(2)
@@ -31,6 +32,7 @@ class SolicitudesTableSeeder extends Seeder
                 'no_soporte' => 'SOL-002',
                 'descripcion' => 'Descripción de la solicitud 2',
                 'cliente_id' => 2, // ID del cliente relacionado
+                'direccion' => 'Dirección de la solicitud 2', // Agregamos la dirección
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'created_at' => now()

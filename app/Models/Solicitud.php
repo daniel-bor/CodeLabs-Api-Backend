@@ -46,6 +46,12 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
+        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+    }
+
+    // Relacion para obtener los item de las muestras relacionadas a las muestras de solicitud
+    public function itemsMuestras()
+    {
         return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
     }
 
