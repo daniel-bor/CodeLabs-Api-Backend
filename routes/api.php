@@ -9,6 +9,7 @@ use App\Http\Controllers\MuestraController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TipoSoporteController;
 use App\Models\Muestra;
+use App\Models\UnidadMedida;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,11 +49,16 @@ Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor'
 //Solicitudes
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/items/{solicitud_id}', [SolicitudController::class, 'getItems']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalle']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
-Route::get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
 
 //Muestras
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras', [MuestraController::class, 'store']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos', [MuestraController::class, 'getTiposMuestras']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras/items', [MuestraController::class, 'asociarItems']);
+Route::middleware('jwt.auth')->get('/muestras/tipos', [MuestraController::class, 'getTiposMuestras']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos/{tipo_muestra_id}/recipientes', [MuestraController::class, 'getRecipientesTipoMuestra']);
+
+//Unidad de medida:
+Route::middleware('jwt.auth')->get('/medidas', [MuestraController::class, 'getUnidadesMedida']);

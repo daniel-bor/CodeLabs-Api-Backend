@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Solicitud;
 use App\Models\TrazabilidadSolicitud;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -109,7 +110,6 @@ class SolicitudController extends Controller
             $items = collect($validatedData['items'])->pluck('id')->all();
             $solicitud->itemsSolicitados()->attach($items);
             return response()->json(['message' => 'Solicitud creada correctamente'], 201);
-
         } catch (\Exception $e) {
             return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e->getMessage()]], 500);
         }
@@ -158,6 +158,7 @@ class SolicitudController extends Controller
     public function getTrazabilidad($solicitud_id)
     {
         $solicitud = Solicitud::with('estadoSolicitud')->find($solicitud_id);
+
 
         if (!$solicitud) {
             return response()->json(['error' => 'Solicitud no encontrada'], 404);
@@ -229,6 +230,30 @@ class SolicitudController extends Controller
             ];
             $response['muestras'][] = $muestra;
         }
-        return response()->json(['solicitud' => $response], 200);
+        return response()->json(['data' => $response], 200);
+    }
+
+    public function getItems($solicitud_id)
+    {
+        try {
+            $solicitud = Solicitud::find($solicitud_id);
+            if (!$solicitud) {
+                return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
+            }
+            $itemsSeleccionados = $solicitud->itemsSolicitados
+            ->filter(function ($item) {
+                return $item->estado == 1;
+            })
+            ->pluck('nombre', 'id')->map(function ($nombre, $id) {
+                return [
+                    'id' => intval($id),
+                    'nombre' => $nombre,
+                ];
+            })->values();
+
+            return response()->json(['data' => $itemsSeleccionados], 200);
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 500);
+        }
     }
 }

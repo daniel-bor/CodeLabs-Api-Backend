@@ -35,7 +35,8 @@ class Muestra extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item');
+        return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item')
+        ->withTimestamps();
     }
 
     protected $fillable = [
