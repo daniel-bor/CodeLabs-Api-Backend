@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoRecipienteMuestra extends Model
+class TipoRecipiente extends Model
 {
     use HasFactory;
-    protected $table = 'tipo_recipiente_muestra';
+    protected $table = 'tipo_recipientes';
 
     // Relación con el usuario que creó este tipo de examen
     public function creadoPor()
@@ -20,5 +20,10 @@ class TipoRecipienteMuestra extends Model
     public function modificadoPor()
     {
         return $this->belongsTo(User::class, 'modificado_por');
+    }
+
+    public function tiposMuestra()
+    {
+        return $this->belongsToMany(TipoMuestra::class, 'tipo_recipiente_muestra', 'tipo_recipiente_id', 'tipo_muestra_id');
     }
 }

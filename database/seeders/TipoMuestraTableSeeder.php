@@ -28,14 +28,26 @@ class TipoMuestraTableSeeder extends Seeder
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Cultivo',
-                'descripcion' => 'Muestra de orina',
+                'nombre' => 'Tejidos',
+                'descripcion' => 'Muestra de tejidos corporales',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
                 'nombre' => 'Eses',
-                'descripcion' => 'Muestra de orina',
+                'descripcion' => 'Muestra de eses',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
+            ],
+            [
+                'nombre' => 'Fluidos Corporales',
+                'descripcion' => 'Muestra de fluidos corporales',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
+            ],
+            [
+                'nombre' => 'Isopos',
+                'descripcion' => 'Para pruebas de enfermedades infecciosas',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
@@ -43,6 +55,6 @@ class TipoMuestraTableSeeder extends Seeder
         ];
 
         // Insertar los registros en la tabla tipo_muestra
-        DB::table('tipo_muestra')->insert($tiposMuestra);
+        DB::table('tipo_muestras')->insert($tiposMuestra);
     }
 }
