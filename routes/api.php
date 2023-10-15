@@ -54,3 +54,5 @@ Route::get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::cla
 
 //Muestras
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras', [MuestraController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos', [MuestraController::class, 'getTiposMuestras']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos/{tipo_muestra_id}/recipientes', [MuestraController::class, 'getRecipientesTipoMuestra']);

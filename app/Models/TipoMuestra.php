@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TipoMuestra extends Model
 {
     use HasFactory;
-    protected $table = 'tipo_muestra';
+    protected $table = 'tipo_muestras';
 
     // Relación con el usuario que creó este tipo de examen
     public function creadoPor()
@@ -20,5 +20,10 @@ class TipoMuestra extends Model
     public function modificadoPor()
     {
         return $this->belongsTo(User::class, 'modificado_por');
+    }
+
+    public function tiposRecipiente()
+    {
+        return $this->belongsToMany(TipoRecipiente::class, 'tipo_recipiente_muestra', 'tipo_muestra_id', 'tipo_recipiente_id');
     }
 }

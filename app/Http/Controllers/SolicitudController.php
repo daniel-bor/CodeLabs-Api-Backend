@@ -68,7 +68,7 @@ class SolicitudController extends Controller
                     'no_expediente' => $item->cliente->no_expediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? '',
+                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? null,
                     'estado_solicitud' => $nombreSolicitudEstado,
                     'fecha_creacion' => $item->created_at
                 ];
@@ -129,26 +129,27 @@ class SolicitudController extends Controller
 
         // Formatear los datos necesarios
         $datos = [
-            'codigo_solicitud' => $solicitud->codigo ?? '',
-            'no_expediente' => $solicitud->cliente->usuario_id ?? '',
-            'nit' => $solicitud->cliente->nit ?? '',
-            'no_soporte' => $solicitud->no_soporte ?? '',
-            'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? '',
-            'usuario_asignado' => $solicitud->usuarioAsignado[0]->name ?? '',
-            'usuario_creación' => $solicitud->usuarioAsignador[0]->name ?? '',
-            'estado_solicitud' => $solicitud->estadoSolicitud->nombre ?? '',
-            'fecha_creación' => $solicitud->created_at ?? '',
+            'codigo_solicitud' => $solicitud->codigo ?? null,
+            'no_expediente' => $solicitud->cliente->usuario_id ?? null,
+            'nit' => $solicitud->cliente->nit ?? null,
+            'no_soporte' => $solicitud->no_soporte ?? null,
+            'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? null,
+            'usuario_asignado' => $solicitud->usuarioAsignado[0]->name ?? null,
+            'usuario_creación' => $solicitud->usuarioAsignador[0]->name ?? null,
+            'estado_solicitud' => $solicitud->estadoSolicitud->nombre ?? null,
+            'fecha_creación' => $solicitud->created_at ?? null,
             'muestras' => $solicitud->muestras->map(function ($muestra) {
                 return [
-                    'muestra_id' => $muestra->id ?? '',
-                    'items' => $muestra->items->pluck('nombre') ?? '', // Asumiendo que 'nombre' es el campo que quieres obtener
+                    'muestra_id' => $muestra->id ?? null,
+                    'codigo' => $muestra->codigo ?? null,
+                    'items' => $muestra->items->pluck('nombre') ?? null, // Asumiendo que 'nombre' es el campo que quieres obtener
                 ];
             }),
-            'documentos' => $solicitud->documentos->pluck('ruta') ?? '', // Asumiendo que 'ruta' es el campo que quieres obtener
-            'descripción' => $solicitud->descripcion ?? '',
-            'solicitante' => $solicitud->cliente->usuario->name ?? '',
-            'telefono' => $solicitud->cliente->usuario->telefono ?? '',
-            'email' => $solicitud->cliente->usuario->email ?? '',
+            'documentos' => $solicitud->documentos->pluck('ruta') ?? null, // Asumiendo que 'ruta' es el campo que quieres obtener
+            'descripción' => $solicitud->descripcion ?? null,
+            'solicitante' => $solicitud->cliente->usuario->name ?? null,
+            'telefono' => $solicitud->cliente->usuario->telefono ?? null,
+            'email' => $solicitud->cliente->usuario->email ?? null,
         ];
 
         return response()->json(['data' => $datos], 200);
@@ -219,7 +220,7 @@ class SolicitudController extends Controller
             $muestra = [
                 'id' => $muestra->id,
                 'tipo_muestra' => $muestra->tipoMuestra->nombre,
-                'tipo_recipiente_muestra' => $muestra->tipoRecipienteMuestra->nombre,
+                'tipo_recipiente' => $muestra->tipoRecipiente->nombre,
                 'cantidad_unidades' => $muestra->cantidad_unidades,
                 'unidad_medida' => $muestra->unidadMedida->nombre,
                 'fecha_vencimiento' => $muestra->dia_vencimiento,

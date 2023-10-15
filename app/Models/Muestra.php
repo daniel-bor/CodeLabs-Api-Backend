@@ -16,9 +16,9 @@ class Muestra extends Model
     }
 
     // Relación con el tipo de recipiente de muestra
-    public function tipoRecipienteMuestra()
+    public function tipoRecipiente()
     {
-        return $this->belongsTo(TipoRecipienteMuestra::class, 'tipo_recipiente_muestra_id');
+        return $this->belongsTo(TipoRecipiente::class, 'tipo_recipiente_id');
     }
 
     // Relación con la unidad de medida
@@ -39,8 +39,9 @@ class Muestra extends Model
     }
 
     protected $fillable = [
+        'codigo',
         'tipo_muestra_id',
-        'tipo_recipiente_muestra_id',
+        'tipo_recipiente_id',
         'cantidad_unidades',
         'unidad_medida_id',
         'etiqueta',
