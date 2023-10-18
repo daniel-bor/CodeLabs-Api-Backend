@@ -224,9 +224,10 @@ class SolicitudController extends Controller
                 'tipo_recipiente' => $muestra->tipoRecipiente->nombre,
                 'cantidad_unidades' => $muestra->cantidad_unidades,
                 'unidad_medida' => $muestra->unidadMedida->nombre,
-                'fecha_vencimiento' => $muestra->dia_vencimiento,
+                'fecha_vencimiento' => $muestra->fecha_vencimiento,
                 'fecha_creacion' => $muestra->created_at,
-                'items' => $muestra->items->pluck('nombre') ?? null
+                'items' => $muestra->items->pluck('nombre') ?? null,
+                'estado' => $muestra->estadoMuestra->nombre
             ];
             $response['muestras'][] = $muestra;
         }
