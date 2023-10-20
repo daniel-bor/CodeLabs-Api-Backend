@@ -19,7 +19,7 @@ class SolicitudController extends Controller
                 'CodigoSolicitud' => 'string|codigo_solicitud',
                 'NoExpediente' => 'string|numero_expediente',
                 'NoSoporte' => 'string|min:3|max:50',
-                'FechaCreacion' => 'date_format:yyyy-mm-dd_yyyy-mm-dd',
+                'FechaCreacion' => 'regex:/\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}/',
                 'NIT' => 'digits_between:3,12',
                 'EstadoSolicitud' => 'exists:estado_solicitudes,id',
             ]);
@@ -44,10 +44,8 @@ class SolicitudController extends Controller
                 return $query->where('UsuarioAsignacion', $request->input('UsuarioAsignacion'));
             })
             ->when($request->has('FechaCreacion'), function ($query) use ($request) {
-                $fechas = explode('-', $request->input('FechaCreacion'));
-                $fechaInicio = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[0]));
-                $fechaFin = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[1]));
-                return $query->whereBetween('fecha_creacion', [$fechaInicio, $fechaFin]);
+                $fechas = explode('_', $request->input('FechaCreacion'));
+                return $query->whereBetween('created_at', [$fechas[0], $fechas[1]]);
             })
             ->when($request->has('NIT'), function ($query) use ($request) {
                 // Utiliza una subconsulta para obtener el NIT desde la tabla cliente
@@ -253,6 +251,19 @@ class SolicitudController extends Controller
             })->values();
 
             return response()->json(['data' => $itemsSeleccionados], 200);
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteById($solicitud_id){
+        try {
+            $solicitud = Solicitud::find($solicitud_id);
+            if (!$solicitud) {
+                return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
+            }
+            $solicitud->delete();
+            return response()->json(['message' => 'Solicitud eliminada correctamente'], 200);
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 500);
         }
