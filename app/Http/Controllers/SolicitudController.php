@@ -212,7 +212,11 @@ class SolicitudController extends Controller
             'codigo' => $solicitud->codigo,
             'cliente' => $solicitud->cliente->usuario->name,
             'fecha_creacion' => $solicitud->created_at,
-            'muestras' => []
+            'muestras' => [],
+            'items_disponibles' => $solicitud->itemsSolicitados()
+                ->whereDoesntHave('itemMuestra')
+                ->select(['items.id', 'items.nombre'])
+                ->get()->toArray()
         ];
 
         foreach ($solicitud->muestras as $muestra) {
@@ -240,15 +244,15 @@ class SolicitudController extends Controller
                 return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
             }
             $itemsSeleccionados = $solicitud->itemsSolicitados
-            ->filter(function ($item) {
-                return $item->estado == 1;
-            })
-            ->pluck('nombre', 'id')->map(function ($nombre, $id) {
-                return [
-                    'id' => intval($id),
-                    'nombre' => $nombre,
-                ];
-            })->values();
+                ->filter(function ($item) {
+                    return $item->estado == 1;
+                })
+                ->pluck('nombre', 'id')->map(function ($nombre, $id) {
+                    return [
+                        'id' => intval($id),
+                        'nombre' => $nombre,
+                    ];
+                })->values();
 
             return response()->json(['data' => $itemsSeleccionados], 200);
         } catch (Exception $e) {
@@ -256,7 +260,8 @@ class SolicitudController extends Controller
         }
     }
 
-    public function deleteById($solicitud_id){
+    public function deleteById($solicitud_id)
+    {
         try {
             $solicitud = Solicitud::find($solicitud_id);
             if (!$solicitud) {
