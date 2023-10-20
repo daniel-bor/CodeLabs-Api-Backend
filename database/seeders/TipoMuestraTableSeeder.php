@@ -16,42 +16,41 @@ class TipoMuestraTableSeeder extends Seeder
         // Definir los registros de tipos de muestra
         $tiposMuestra = [
             [
-                'nombre' => 'Sangre',
+                'nombre' => 'SANGRE',
                 'descripcion' => 'Muestra de sangre',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Orina',
+                'nombre' => 'ORINA',
                 'descripcion' => 'Muestra de orina',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Tejidos',
+                'nombre' => 'TEJIDOS CORPORALES',
                 'descripcion' => 'Muestra de tejidos corporales',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Eses',
+                'nombre' => 'ESES',
                 'descripcion' => 'Muestra de eses',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Fluidos Corporales',
+                'nombre' => 'FLUIDOS CORPORALES',
                 'descripcion' => 'Muestra de fluidos corporales',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Isopos',
+                'nombre' => 'ISOPOS',
                 'descripcion' => 'Para pruebas de enfermedades infecciosas',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
-            ],
-            // Agregar más tipos de muestra aquí
+            ]
         ];
 
         // Insertar los registros en la tabla tipo_muestra
