@@ -32,4 +32,9 @@ class Item extends Model
         return $this->belongsToMany(Muestra::class, 'items_muestras', 'id_item', 'id_muestra')
             ->withTimestamps();
     }
+
+    public function itemMuestra()
+    {
+        return $this->hasOne(ItemsMuestra::class, 'id_item');
+    }
 }
