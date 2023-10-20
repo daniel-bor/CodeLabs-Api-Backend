@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Muestra;
 use App\Models\TipoMuestra;
+use Illuminate\Support\Str;
 use App\Models\UnidadMedida;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class MuestraController extends Controller
@@ -17,7 +18,6 @@ class MuestraController extends Controller
     {
         try {
             $request->validate([
-                'codigo' => 'required|string|max:17|unique:muestras,codigo|codigo_muestra',
                 'tipo_muestra_id' => 'required|exists:tipo_muestras,id',
                 'tipo_recipiente_id' => 'required|exists:tipo_recipientes,id',
                 'cantidad_unidades' => 'required|numeric|min:1|max:4',
@@ -30,7 +30,9 @@ class MuestraController extends Controller
         }
 
         try {
-            $muestra = Muestra::create($request->all());
+            $codigoMuestra = $this->generateMuestraCode($request->tipo_muestra_id);
+            $request->merge(['codigo' => $codigoMuestra]);
+            Muestra::create($request->all());
 
             return response()->json(['message' => 'Muestra creada con éxito'], 201);
         } catch (Exception $e) {
@@ -104,5 +106,15 @@ class MuestraController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error interno del servidor', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    //Metodo para Funcionalidad de ACCIONES:
+    private function generateMuestraCode($tipo_muestra_id)
+    {
+        $tipoMuestra = TipoMuestra::find($tipo_muestra_id);
+        $fechaSolicitud = now()->format('Ymd');
+        $guid = Str::random(6);
+        $codigoMuestra = substr($tipoMuestra->nombre, 0, 2) . '-' . $fechaSolicitud . '-' . $guid;
+        return $codigoMuestra;
     }
 }

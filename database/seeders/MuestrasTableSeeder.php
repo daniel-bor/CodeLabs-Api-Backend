@@ -24,6 +24,7 @@ class MuestrasTableSeeder extends Seeder
                 'solicitud_id' => 1, // ID de la solicitud relacionada
                 'fecha_vencimiento' => '2023-10-31',
                 'created_at' => now()->subDay(1),
+                'estado' => 2
             ],
             [
                 'codigo' => 'SA-20231014-00002', // Código de la muestra, debe ser único
@@ -34,6 +35,7 @@ class MuestrasTableSeeder extends Seeder
                 'solicitud_id' => 2, // ID de la solicitud relacionada
                 'fecha_vencimiento' => '2023-10-31',
                 'created_at' => now()->subDay(1),
+                'estado' => 1
             ],
             // Agregar más registros de muestras aquí
         ];

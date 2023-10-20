@@ -39,6 +39,12 @@ class Muestra extends Model
         ->withTimestamps();
     }
 
+    //Relacion para el estado de muestra
+    public function estadoMuestra()
+    {
+        return $this->belongsTo(EstadoSolicitud::class, 'estado', 'id');
+    }
+
     protected $fillable = [
         'codigo',
         'tipo_muestra_id',

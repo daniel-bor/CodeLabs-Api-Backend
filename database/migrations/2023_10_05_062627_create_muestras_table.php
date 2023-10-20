@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('unidad_medida_id')->notNull();
             $table->unsignedBigInteger('solicitud_id')->notNull();
             $table->timestamp('fecha_vencimiento')->notNull();
-            $table->integer('estado')->default(1);
+            $table->unsignedBigInteger('estado')->default(10);
             $table->timestamps();
 
             // Definición de claves foráneas
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->foreign('tipo_recipiente_id')->references('id')->on('tipo_recipientes');
             $table->foreign('unidad_medida_id')->references('id')->on('unidad_medidas');
             $table->foreign('solicitud_id')->references('id')->on('solicitudes');
+            $table->foreign('estado')->references('id')->on('estado_solicitudes');
         });
     }
 
