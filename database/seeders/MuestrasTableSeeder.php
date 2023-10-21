@@ -37,7 +37,17 @@ class MuestrasTableSeeder extends Seeder
                 'created_at' => now()->subDay(1),
                 'estado' => 1
             ],
-            // Agregar más registros de muestras aquí
+            [
+                'codigo' => 'SA-20231014-00003', // Código de la muestra, debe ser único
+                'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
+                'tipo_recipiente_id' => 2, // ID del tipo de recipiente de muestra relacionado
+                'cantidad_unidades' => 1,
+                'unidad_medida_id' => 2, // ID de la unidad de medida relacionada
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'fecha_vencimiento' => '2023-10-31',
+                'created_at' => now()->subDay(1),
+                'estado' => 1
+            ]
         ];
 
         // Insertar los registros en la tabla muestras

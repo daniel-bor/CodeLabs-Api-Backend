@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('latitud')->notNull();
             $table->unsignedBigInteger('estado')->notNull()->default(1);
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
 
             // Definición de claves foráneas
             $table->foreign('tipo_soporte_id')->references('id')->on('tipo_soportes');
