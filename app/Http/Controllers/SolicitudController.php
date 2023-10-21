@@ -289,6 +289,10 @@ class SolicitudController extends Controller
             if (!$solicitud) {
                 return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
             }
+            // Validar que la muestra no tenga items asociados
+            if ($solicitud->muestras->isNotEmpty()) {
+                return response()->json(['message' => 'La solicitud tiene muestras asociadas y no puede ser eliminada'], 400);
+            }
             $solicitud->delete();
             return response()->json(['message' => 'Solicitud eliminada correctamente'], 200);
         } catch (Exception $e) {

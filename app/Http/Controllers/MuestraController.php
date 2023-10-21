@@ -87,7 +87,7 @@ class MuestraController extends Controller
                 $validator = Validator::make($itemData, [
                     'id' => 'required|exists:muestras,id',
                     'items' => 'required|array',
-                    'items.*.id' => ['required', Rule::exists('items', 'id')->where('estado', 1)],
+                    'items.*.id' => [Rule::exists('items', 'id')->where('estado', 1)],
                 ]);
 
                 if ($validator->fails()) {
@@ -97,12 +97,11 @@ class MuestraController extends Controller
                 $muestra = Muestra::findOrFail($itemData['id']);
                 $items = $itemData['items'];
 
-                foreach ($items as $item) {
-                    $muestra->items()->attach($item['id']);
-                }
-            }
+                // Elimina los registros existentes y establece las nuevas relaciones
+                $muestra->items()->sync(collect($items)->pluck('id'));
 
-            return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
+                return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
+            }
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error interno del servidor', 'error' => $e->getMessage()], 500);
         }
@@ -126,15 +125,6 @@ class MuestraController extends Controller
             'unidadMedida',
             'items',
         ])->find($muestra_id);
-        // $solicitud = Solicitud::with([
-        //     'cliente.usuario', // Relación con Cliente y su Usuario
-        //     'estadoSolicitud',
-        //     'usuarioAsignado',
-        //     'usuarioAsignador',
-        //     'muestras.items',
-        //     'documentos',
-        //     'tipoSoporte',
-        // ])->find($solicitud_id);
 
         // Formatear los datos necesarios
         $datos = [
