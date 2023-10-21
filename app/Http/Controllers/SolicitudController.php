@@ -113,7 +113,7 @@ class SolicitudController extends Controller
         }
     }
 
-    public function getDetalle($solicitud_id)
+    public function getDetalleById($solicitud_id)
     {
         $solicitud = Solicitud::with([
             'cliente.usuario', // Relación con Cliente y su Usuario
@@ -128,7 +128,7 @@ class SolicitudController extends Controller
         // Formatear los datos necesarios
         $datos = [
             'codigo_solicitud' => $solicitud->codigo ?? null,
-            'no_expediente' => $solicitud->cliente->usuario_id ?? null,
+            'no_expediente' => $solicitud->cliente->no_expediente ?? null,
             'nit' => $solicitud->cliente->nit ?? null,
             'no_soporte' => $solicitud->no_soporte ?? null,
             'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? null,
@@ -242,12 +242,13 @@ class SolicitudController extends Controller
                 'unidad_medida' => $muestra->unidadMedida->nombre,
                 'fecha_vencimiento' => $muestra->fecha_vencimiento,
                 'fecha_creacion' => $muestra->created_at,
-                'items' => $muestra->items->map(function ($item) {
+                'items' => $muestra->items->map(function ($item) use ($muestra) {
                     return [
                         'id' => $item->id,
                         'nombre' => $item->nombre,
                         'tipo_examen_id' => $item->tipoExamen->id,
-                        'tipo_examen' => $item->tipoExamen->nombre
+                        'tipo_examen' => $item->tipoExamen->nombre,
+                        'muestras_compatibles' => $item->tipoExamen->tipoMuestra->muestras->where('solicitud_id', $muestra->solicitud_id)->pluck('id')
                     ];
                 }),
                 'estado' => $muestra->estadoMuestra->nombre

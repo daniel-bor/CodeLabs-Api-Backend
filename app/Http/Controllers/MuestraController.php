@@ -117,4 +117,76 @@ class MuestraController extends Controller
         $codigoMuestra = substr($tipoMuestra->nombre, 0, 2) . '-' . $fechaSolicitud . '-' . $guid;
         return $codigoMuestra;
     }
+
+    public function getDetalleById($muestra_id)
+    {
+        $muestra = Muestra::with([
+            'solicitud.cliente.usuario', // Relación con Solicitud, Cliente y su Usuario
+            'tipoRecipiente',
+            'unidadMedida',
+            'items',
+        ])->find($muestra_id);
+        // $solicitud = Solicitud::with([
+        //     'cliente.usuario', // Relación con Cliente y su Usuario
+        //     'estadoSolicitud',
+        //     'usuarioAsignado',
+        //     'usuarioAsignador',
+        //     'muestras.items',
+        //     'documentos',
+        //     'tipoSoporte',
+        // ])->find($solicitud_id);
+
+        // Formatear los datos necesarios
+        $datos = [
+            'codigo_solicitud' => $muestra->solicitud->codigo ?? null,
+            'estado_solicitud' => $muestra->solicitud->estadoSolicitud->nombre ?? null,
+            'descripcion_solicitud' => $muestra->solicitud->descripcion ?? null,
+            'fecha_creacion_solicitud' => $muestra->solicitud->created_at ?? null,
+            'usuario_actual_solicitud' => $muestra->solicitud->usuarioAsignado[0]->name ?? null,
+            'usuario_anterior_solicitud' => $muestra->solicitud->usuarioAsignador[0]->name ?? null,
+            'cliente' => $muestra->solicitud->cliente->usuario->name ?? null,
+            'no_expediente' => $muestra->solicitud->cliente->no_expediente ?? null,
+            'email' => $muestra->solicitud->cliente->usuario->email ?? null,
+            'no_soporte' => $muestra->solicitud->no_soporte ?? null,
+            'tipo_soporte' => $muestra->solicitud->tipoSoporte->nombre ?? null,
+            'codigo_muestra' => $muestra->codigo ?? null,
+            'fecha_creacion_muestra' => $muestra->created_at ?? null,
+            'fecha_vencimiento_muestra' => $muestra->fecha_vencimiento ?? null,
+            'cantidad_unidades' => $muestra->cantidad_unidades ?? null,
+            'tipo_recipiente' => $muestra->tipoRecipiente->nombre ?? null,
+            'tipo_muestra' => $muestra->tipoMuestra->nombre ?? null,
+            'unidad_medida' => $muestra->unidadMedida->nombre ?? null,
+            'items_muestra' => $muestra->items->map(function ($item) {
+                return [
+                    'id' => $item->id ?? null,
+                    'nombre' => $item->nombre ?? null,
+                ];
+            }),
+        ];
+
+        return response()->json(['data' => $datos], 200);
+    }
+
+    public function deleteById($muestra_id)
+    {
+        try {
+            $muestra = Muestra::find($muestra_id);
+            // Validar que la muestra existe en la tabla
+            if (!$muestra) {
+                return response()->json(['message' => 'La muestra no existe'], 404);
+            }
+
+            // Validar que la muestra no tenga items asociados
+            if ($muestra->items->isNotEmpty()) {
+                return response()->json(['message' => 'La muestra tiene items asociados y no puede ser eliminada'], 400);
+            }
+
+            // Realizar la eliminación lógica
+            $muestra->delete();
+
+            return response()->json(['message' => 'Muestra eliminada con éxito'], 200);
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 500);
+        }
+    }
 }

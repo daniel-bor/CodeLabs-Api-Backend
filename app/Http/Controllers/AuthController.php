@@ -37,6 +37,7 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
             'cliente' => $cliente, // Agrega los datos del cliente asociado aquí
+            'rol' => $user->empleado->rol->nombre ?? 'Cliente' // Agrega los datos del empleado asociado aquí
         ]);
     }
 

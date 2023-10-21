@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp('fecha_vencimiento')->notNull();
             $table->unsignedBigInteger('estado')->default(10);
             $table->timestamps();
+            $table->softDeletes();
 
             // Definición de claves foráneas
             $table->foreign('tipo_muestra_id')->references('id')->on('tipo_muestras');
