@@ -88,25 +88,25 @@ class EstadoSolicitudesTableSeeder extends Seeder
                 'nombre' => 'Creado',
                 'descripcion' => 'Muestra creada en solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1,
+                'estado' => 2,
             ],
             [
                 'nombre' => 'Asignado',
                 'descripcion' => 'Muestra contiene items asignados',
                 'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1,
+                'estado' => 2,
             ],
             [
                 'nombre' => 'Caducado',
                 'descripcion' => 'Muestra caduco en solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1,
+                'estado' => 2,
             ],
             [
                 'nombre' => 'Eliminado',
                 'descripcion' => 'Muestra fue retirada de solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1,
+                'estado' => 2,
             ]
         ];
 
