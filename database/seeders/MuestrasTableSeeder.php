@@ -16,26 +16,38 @@ class MuestrasTableSeeder extends Seeder
         // Definir los registros de muestras
         $muestras = [
             [
-                'tipo_muestra_id' => 1, // ID del tipo de muestra relacionado
-                'tipo_recipiente_muestra_id' => 1, // ID del tipo de recipiente de muestra relacionado
+                'codigo' => 'SA-20231014-00001', // Código de la muestra, debe ser único
+                'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
+                'tipo_recipiente_id' => 1, // ID del tipo de recipiente de muestra relacionado
                 'cantidad_unidades' => 5,
                 'unidad_medida_id' => 1, // ID de la unidad de medida relacionada
-                'etiqueta' => 'Muestra 1',
                 'solicitud_id' => 1, // ID de la solicitud relacionada
-                'dia_vencimiento' => '2023-12-31',
-                'estado' => true,
+                'fecha_vencimiento' => '2023-10-31',
+                'created_at' => now()->subDay(1),
+                'estado' => 2
             ],
             [
+                'codigo' => 'SA-20231014-00002', // Código de la muestra, debe ser único
                 'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
-                'tipo_recipiente_muestra_id' => 2, // ID del tipo de recipiente de muestra relacionado
+                'tipo_recipiente_id' => 2, // ID del tipo de recipiente de muestra relacionado
                 'cantidad_unidades' => 3,
                 'unidad_medida_id' => 2, // ID de la unidad de medida relacionada
-                'etiqueta' => 'Muestra 2',
                 'solicitud_id' => 2, // ID de la solicitud relacionada
-                'dia_vencimiento' => '2023-12-31',
-                'estado' => true,
+                'fecha_vencimiento' => '2023-10-31',
+                'created_at' => now()->subDay(1),
+                'estado' => 1
             ],
-            // Agregar más registros de muestras aquí
+            [
+                'codigo' => 'SA-20231014-00003', // Código de la muestra, debe ser único
+                'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
+                'tipo_recipiente_id' => 2, // ID del tipo de recipiente de muestra relacionado
+                'cantidad_unidades' => 1,
+                'unidad_medida_id' => 2, // ID de la unidad de medida relacionada
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'fecha_vencimiento' => '2023-10-31',
+                'created_at' => now()->subDay(1),
+                'estado' => 1
+            ]
         ];
 
         // Insertar los registros en la tabla muestras

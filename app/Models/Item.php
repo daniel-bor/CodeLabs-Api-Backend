@@ -26,4 +26,20 @@ class Item extends Model
     {
         return $this->belongsTo(TipoExamen::class, 'tipo_examen_id');
     }
+
+    public function muestras()
+    {
+        return $this->belongsToMany(Muestra::class, 'items_muestras', 'id_item', 'id_muestra')
+            ->withTimestamps();
+    }
+
+    public function itemMuestra()
+    {
+        return $this->hasOne(ItemsMuestra::class, 'id_item');
+    }
+
+    public function itemMuestrasCompatibles()
+    {
+        return $this->tipoExamen->tipoMuestra->muestras();
+    }
 }

@@ -27,6 +27,18 @@ class ItemsSolicitudAnalisisTableSeeder extends Seeder
                 'estado' => 1,
                 'created_at' => now()
             ],
+            [
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'item_id' => 3, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'item_id' => 4, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
             // Agregar más registros de items_solicitud_analisis aquí
         ];
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Solicitud;
 use App\Models\TrazabilidadSolicitud;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,7 +19,7 @@ class SolicitudController extends Controller
                 'CodigoSolicitud' => 'string|codigo_solicitud',
                 'NoExpediente' => 'string|numero_expediente',
                 'NoSoporte' => 'string|min:3|max:50',
-                'FechaCreacion' => 'date_format:yyyy-mm-dd_yyyy-mm-dd',
+                'FechaCreacion' => 'regex:/\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}/',
                 'NIT' => 'digits_between:3,12',
                 'EstadoSolicitud' => 'exists:estado_solicitudes,id',
             ]);
@@ -43,10 +44,8 @@ class SolicitudController extends Controller
                 return $query->where('UsuarioAsignacion', $request->input('UsuarioAsignacion'));
             })
             ->when($request->has('FechaCreacion'), function ($query) use ($request) {
-                $fechas = explode('-', $request->input('FechaCreacion'));
-                $fechaInicio = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[0]));
-                $fechaFin = \Carbon\Carbon::createFromFormat('d/m/Y', trim($fechas[1]));
-                return $query->whereBetween('fecha_creacion', [$fechaInicio, $fechaFin]);
+                $fechas = explode('_', $request->input('FechaCreacion'));
+                return $query->whereBetween('created_at', [$fechas[0], $fechas[1]]);
             })
             ->when($request->has('NIT'), function ($query) use ($request) {
                 // Utiliza una subconsulta para obtener el NIT desde la tabla cliente
@@ -65,12 +64,12 @@ class SolicitudController extends Controller
                 return [
                     'id' => $item->id,
                     'codigo' => $item->codigo,
-                    'no_expediente' => $item->cliente->NoExpediente,
+                    'no_expediente' => $item->cliente->no_expediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? '',
+                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? null,
                     'estado_solicitud' => $nombreSolicitudEstado,
-                    'fecha_creacion' => $item->created_at,
+                    'fecha_creacion' => $item->created_at
                 ];
             });
 
@@ -87,6 +86,7 @@ class SolicitudController extends Controller
                 'no_soporte' => 'required|string|max:50',
                 'descripcion' => 'required|string|max:100',
                 'cliente_id' => 'required|exists:clientes,usuario_id',
+                'direccion' => 'required|string|max:100',
                 'longitud' => 'string',
                 'latitud' => 'string',
                 'items' => 'required|array',
@@ -109,11 +109,11 @@ class SolicitudController extends Controller
             $solicitud->itemsSolicitados()->attach($items);
             return response()->json(['message' => 'Solicitud creada correctamente'], 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'No se pudo registrar el usuario'], 500);
+            return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e->getMessage()]], 500);
         }
     }
 
-    public function getDetalle($solicitud_id)
+    public function getDetalleById($solicitud_id)
     {
         $solicitud = Solicitud::with([
             'cliente.usuario', // Relación con Cliente y su Usuario
@@ -127,26 +127,27 @@ class SolicitudController extends Controller
 
         // Formatear los datos necesarios
         $datos = [
-            'codigo_solicitud' => $solicitud->codigo ?? '',
-            'no_expediente' => $solicitud->cliente->usuario_id ?? '',
-            'nit' => $solicitud->cliente->nit ?? '',
-            'no_soporte' => $solicitud->no_soporte ?? '',
-            'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? '',
-            'usuario_asignado' => $solicitud->usuarioAsignado[0]->name ?? '',
-            'usuario_creación' => $solicitud->usuarioAsignador[0]->name ?? '',
-            'estado_solicitud' => $solicitud->estadoSolicitud->nombre ?? '',
-            'fecha_creación' => $solicitud->created_at ?? '',
+            'codigo_solicitud' => $solicitud->codigo ?? null,
+            'no_expediente' => $solicitud->cliente->no_expediente ?? null,
+            'nit' => $solicitud->cliente->nit ?? null,
+            'no_soporte' => $solicitud->no_soporte ?? null,
+            'tipo_soporte' => $solicitud->tipoSoporte->nombre ?? null,
+            'usuario_asignado' => $solicitud->usuarioAsignado[0]->name ?? null,
+            'usuario_creación' => $solicitud->usuarioAsignador[0]->name ?? null,
+            'estado_solicitud' => $solicitud->estadoSolicitud->nombre ?? null,
+            'fecha_creación' => $solicitud->created_at ?? null,
             'muestras' => $solicitud->muestras->map(function ($muestra) {
                 return [
-                    'muestra_id' => $muestra->id ?? '',
-                    'items' => $muestra->items->pluck('nombre') ?? '', // Asumiendo que 'nombre' es el campo que quieres obtener
+                    'muestra_id' => $muestra->id ?? null,
+                    'codigo' => $muestra->codigo ?? null,
+                    'items' => $muestra->items->pluck('nombre') ?? null, // Asumiendo que 'nombre' es el campo que quieres obtener
                 ];
             }),
-            'documentos' => $solicitud->documentos->pluck('ruta') ?? '', // Asumiendo que 'ruta' es el campo que quieres obtener
-            'descripción' => $solicitud->descripcion ?? '',
-            'solicitante' => $solicitud->cliente->usuario->name ?? '',
-            'telefono' => $solicitud->cliente->usuario->telefono ?? '',
-            'email' => $solicitud->cliente->usuario->email ?? '',
+            'documentos' => $solicitud->documentos->pluck('ruta') ?? null, // Asumiendo que 'ruta' es el campo que quieres obtener
+            'descripción' => $solicitud->descripcion ?? null,
+            'solicitante' => $solicitud->cliente->usuario->name ?? null,
+            'telefono' => $solicitud->cliente->usuario->telefono ?? null,
+            'email' => $solicitud->cliente->usuario->email ?? null,
         ];
 
         return response()->json(['data' => $datos], 200);
@@ -155,6 +156,7 @@ class SolicitudController extends Controller
     public function getTrazabilidad($solicitud_id)
     {
         $solicitud = Solicitud::with('estadoSolicitud')->find($solicitud_id);
+
 
         if (!$solicitud) {
             return response()->json(['error' => 'Solicitud no encontrada'], 404);
@@ -195,5 +197,101 @@ class SolicitudController extends Controller
         }
 
         return response()->json(['data' => $response], 200);
+    }
+
+    public function getMuestras($solicitud_id)
+    {
+        $solicitud = Solicitud::with('muestras')->find($solicitud_id);
+
+        if (!$solicitud) {
+            return response()->json(['message' => 'Solicitud no encontrada'], 404);
+        }
+
+        $response = [
+            'id' => $solicitud->id,
+            'codigo' => $solicitud->codigo,
+            'cliente' => $solicitud->cliente->usuario->name,
+            'no_expediente' => $solicitud->cliente->no_expediente,
+            'fecha_creacion' => $solicitud->created_at,
+            'muestras' => [],
+            'items_disponibles' => []
+        ];
+
+        $itemsDisponibles = $solicitud->itemsSolicitados()
+            ->whereDoesntHave('itemMuestra')
+            ->get();
+
+        $response['items_disponibles'] = $itemsDisponibles->map(function ($item) use ($solicitud_id) {
+            return [
+                'id' => $item->id,
+                'nombre' => $item->nombre,
+                'tipo_examen_id' => $item->tipoExamen->id,
+                'tipo_examen' => $item->tipoExamen->nombre,
+                'muestras_compatibles' => $item->tipoExamen->tipoMuestra->muestras->where('solicitud_id', $solicitud_id)->pluck('id')
+            ];
+        });
+
+        // Procesar las muestras
+        $response['muestras'] = $solicitud->muestras->map(function ($muestra) {
+            return [
+                'id' => $muestra->id,
+                'codigo' => $muestra->codigo,
+                'tipo_muestra' => $muestra->tipoMuestra->nombre,
+                'tipo_recipiente' => $muestra->tipoRecipiente->nombre,
+                'cantidad_unidades' => $muestra->cantidad_unidades,
+                'unidad_medida' => $muestra->unidadMedida->nombre,
+                'fecha_vencimiento' => $muestra->fecha_vencimiento,
+                'fecha_creacion' => $muestra->created_at,
+                'items' => $muestra->items->map(function ($item) use ($muestra) {
+                    return [
+                        'id' => $item->id,
+                        'nombre' => $item->nombre,
+                        'tipo_examen_id' => $item->tipoExamen->id,
+                        'tipo_examen' => $item->tipoExamen->nombre,
+                        'muestras_compatibles' => $item->tipoExamen->tipoMuestra->muestras->where('solicitud_id', $muestra->solicitud_id)->pluck('id')
+                    ];
+                }),
+                'estado' => $muestra->estadoMuestra->nombre
+            ];
+        });
+        return response()->json(['data' => $response], 200);
+    }
+
+    public function getItems($solicitud_id)
+    {
+        try {
+            $solicitud = Solicitud::find($solicitud_id);
+            if (!$solicitud) {
+                return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
+            }
+            $itemsSeleccionados = $solicitud->itemsSolicitados
+                ->filter(function ($item) {
+                    return $item->estado == 1;
+                })
+                ->pluck('nombre', 'id')->map(function ($nombre, $id) {
+                    return [
+                        'id' => intval($id),
+                        'nombre' => $nombre,
+                    ];
+                })->values();
+
+            return response()->json(['data' => $itemsSeleccionados], 200);
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteById($solicitud_id)
+    {
+        try {
+            $solicitud = Solicitud::find($solicitud_id);
+            if (!$solicitud) {
+                return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 422);
+            }
+            $solicitud->delete();
+            return response()->json(['message' => 'Solicitud eliminada correctamente'], 200);
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 500);
+        }
     }
 }

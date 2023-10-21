@@ -13,21 +13,23 @@ return new class extends Migration
     {
         Schema::create('muestras', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo', 18)->notNull()->unique();
             $table->unsignedBigInteger('tipo_muestra_id')->notNull();
-            $table->unsignedBigInteger('tipo_recipiente_muestra_id')->notNull();
+            $table->unsignedBigInteger('tipo_recipiente_id')->notNull();
             $table->integer('cantidad_unidades')->notNull();
             $table->unsignedBigInteger('unidad_medida_id')->notNull();
-            $table->string('etiqueta', 50)->notNull();
             $table->unsignedBigInteger('solicitud_id')->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
-            $table->date('dia_vencimiento')->notNull();
-            $table->boolean('estado')->default(true);
+            $table->timestamp('fecha_vencimiento')->notNull();
+            $table->unsignedBigInteger('estado')->default(10);
+            $table->timestamps();
+            $table->softDeletes();
 
             // Definición de claves foráneas
-            $table->foreign('tipo_muestra_id')->references('id')->on('tipo_muestra');
-            $table->foreign('tipo_recipiente_muestra_id')->references('id')->on('tipo_recipiente_muestra');
+            $table->foreign('tipo_muestra_id')->references('id')->on('tipo_muestras');
+            $table->foreign('tipo_recipiente_id')->references('id')->on('tipo_recipientes');
             $table->foreign('unidad_medida_id')->references('id')->on('unidad_medidas');
             $table->foreign('solicitud_id')->references('id')->on('solicitudes');
+            $table->foreign('estado')->references('id')->on('estado_solicitudes');
         });
     }
 

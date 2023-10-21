@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Solicitud extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     protected $table = 'solicitudes';
 
     // Relación con el tipo de soporte
@@ -46,6 +48,12 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
+        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+    }
+
+    // Relacion para obtener los item de las muestras relacionadas a las muestras de solicitud
+    public function itemsMuestras()
+    {
         return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
     }
 
@@ -74,7 +82,7 @@ class Solicitud extends Model
         'no_soporte',
         'descripcion',
         'cliente_id',
-        'cliente_id',
+        'direccion',
         'longitud',
         'latitud',
         'codigo'

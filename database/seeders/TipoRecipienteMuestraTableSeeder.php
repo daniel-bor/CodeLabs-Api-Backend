@@ -2,35 +2,26 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\TipoMuestra;
+use App\Models\TipoRecipiente;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
 
 class TipoRecipienteMuestraTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        // Definir los registros de tipos de recipiente de muestra
-        $tiposRecipienteMuestra = [
-            [
-                'nombre' => 'Frasco',
-                'descripcion' => 'Recipiente tipo frasco',
-                'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
-            ],
-            [
-                'nombre' => 'Tubo de ensayo',
-                'descripcion' => 'Recipiente tipo tubo de ensayo',
-                'creado_por' => 1, // ID del usuario que creó este estado
-                'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
-            ],
-            // Agregar más tipos de recipiente de muestra aquí
-        ];
+        // Obtén tipos de recipientes y tipos de muestra
+        $tiposRecipiente = TipoRecipiente::all();
+        $tiposMuestra = TipoMuestra::all();
 
-        // Insertar los registros en la tabla tipo_recipiente_muestra
-        DB::table('tipo_recipiente_muestra')->insert($tiposRecipienteMuestra);
+        // Asocia tipos de recipientes con tipos de muestra
+        foreach ($tiposRecipiente as $tipoRecipiente) {
+            $tipoMuestraIds = $tiposMuestra->pluck('id')->random(3); // Asocia 3 tipos de muestra aleatorios
+            $tipoRecipiente->tiposMuestra()->attach($tipoMuestraIds);
+        }
     }
 }
