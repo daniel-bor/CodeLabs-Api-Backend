@@ -17,7 +17,7 @@ class MuestrasTableSeeder extends Seeder
         $muestras = [
             [
                 'codigo' => 'SA-20231014-00001', // Código de la muestra, debe ser único
-                'tipo_muestra_id' => 1, // ID del tipo de muestra relacionado
+                'tipo_muestra_id' => 2, // ID del tipo de muestra relacionado
                 'tipo_recipiente_id' => 1, // ID del tipo de recipiente de muestra relacionado
                 'cantidad_unidades' => 5,
                 'unidad_medida_id' => 1, // ID de la unidad de medida relacionada

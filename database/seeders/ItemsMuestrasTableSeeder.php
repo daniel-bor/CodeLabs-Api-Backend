@@ -21,7 +21,7 @@ class ItemsMuestrasTableSeeder extends Seeder
             ],
             [
                 'id_item' => 2, // ID del item relacionado
-                'id_muestra' => 1, // ID de la muestra relacionada
+                'id_muestra' => 2, // ID de la muestra relacionada
             ],
             // Agregar más registros de items_muestras aquí
         ];

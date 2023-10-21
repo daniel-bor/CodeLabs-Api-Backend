@@ -26,4 +26,9 @@ class TipoMuestra extends Model
     {
         return $this->belongsToMany(TipoRecipiente::class, 'tipo_recipiente_muestra', 'tipo_muestra_id', 'tipo_recipiente_id');
     }
+
+    public function muestras()
+    {
+        return $this->hasMany(Muestra::class, 'tipo_muestra_id');
+    }
 }

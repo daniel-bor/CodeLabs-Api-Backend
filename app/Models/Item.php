@@ -37,4 +37,9 @@ class Item extends Model
     {
         return $this->hasOne(ItemsMuestra::class, 'id_item');
     }
+
+    public function itemMuestrasCompatibles()
+    {
+        return $this->tipoExamen->tipoMuestra->muestras();
+    }
 }

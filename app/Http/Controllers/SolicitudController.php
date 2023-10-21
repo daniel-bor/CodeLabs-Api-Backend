@@ -211,28 +211,48 @@ class SolicitudController extends Controller
             'id' => $solicitud->id,
             'codigo' => $solicitud->codigo,
             'cliente' => $solicitud->cliente->usuario->name,
+            'no_expediente' => $solicitud->cliente->no_expediente,
             'fecha_creacion' => $solicitud->created_at,
             'muestras' => [],
-            'items_disponibles' => $solicitud->itemsSolicitados()
-                ->whereDoesntHave('itemMuestra')
-                ->select(['items.id', 'items.nombre'])
-                ->get()->toArray()
+            'items_disponibles' => []
         ];
 
-        foreach ($solicitud->muestras as $muestra) {
-            $muestra = [
+        $itemsDisponibles = $solicitud->itemsSolicitados()
+            ->whereDoesntHave('itemMuestra')
+            ->get();
+
+        $response['items_disponibles'] = $itemsDisponibles->map(function ($item) use ($solicitud_id) {
+            return [
+                'id' => $item->id,
+                'nombre' => $item->nombre,
+                'tipo_examen_id' => $item->tipoExamen->id,
+                'tipo_examen' => $item->tipoExamen->nombre,
+                'muestras_compatibles' => $item->tipoExamen->tipoMuestra->muestras->where('solicitud_id', $solicitud_id)->pluck('id')
+            ];
+        });
+
+        // Procesar las muestras
+        $response['muestras'] = $solicitud->muestras->map(function ($muestra) {
+            return [
                 'id' => $muestra->id,
+                'codigo' => $muestra->codigo,
                 'tipo_muestra' => $muestra->tipoMuestra->nombre,
                 'tipo_recipiente' => $muestra->tipoRecipiente->nombre,
                 'cantidad_unidades' => $muestra->cantidad_unidades,
                 'unidad_medida' => $muestra->unidadMedida->nombre,
                 'fecha_vencimiento' => $muestra->fecha_vencimiento,
                 'fecha_creacion' => $muestra->created_at,
-                'items' => $muestra->items->pluck('nombre') ?? null,
+                'items' => $muestra->items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'nombre' => $item->nombre,
+                        'tipo_examen_id' => $item->tipoExamen->id,
+                        'tipo_examen' => $item->tipoExamen->nombre
+                    ];
+                }),
                 'estado' => $muestra->estadoMuestra->nombre
             ];
-            $response['muestras'][] = $muestra;
-        }
+        });
         return response()->json(['data' => $response], 200);
     }
 

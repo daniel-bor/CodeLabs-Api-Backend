@@ -34,7 +34,7 @@ class TipoMuestraTableSeeder extends Seeder
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'ESES',
+                'nombre' => 'HECES',
                 'descripcion' => 'Muestra de eses',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo

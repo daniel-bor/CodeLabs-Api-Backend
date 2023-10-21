@@ -491,6 +491,108 @@ class ItemsTableSeeder extends Seeder
             ],
         ];
 
+        $evaluacionBiopsiaTejido = [
+            [
+                'nombre' => 'Análisis histopatológico',
+                'descripcion' => 'Para evaluar la estructura celular y tisular.',
+                'tipo_examen_id' => 11, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Células anormales',
+                'descripcion' => 'Tumores y afecciones específicas.',
+                'tipo_examen_id' => 11,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
+        $evaluacionCitologiaTejido = [
+            [
+                'nombre' => 'Células individuales',
+                'descripcion' => 'Para evaluar una celula especifica en un tejido.',
+                'tipo_examen_id' => 12, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Células anormales',
+                'descripcion' => 'Como en citologías cervicales.',
+                'tipo_examen_id' => 12,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
+        $analisisHecesSangreOculta = [
+            [
+                'nombre' => 'Sangre no visible',
+                'descripcion' => 'Encontrar por analisis sangre no visible a simple vista.',
+                'tipo_examen_id' => 13, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Sangrado gastrointestinal',
+                'descripcion' => 'Evaluación de sangrado gastrointestinal.',
+                'tipo_examen_id' => 13,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
+        $analisisCoproscopia = [
+            [
+                'nombre' => 'Identificación de microorganismos',
+                'descripcion' => 'Identificación de parásitos, huevos de parásitos y otros microorganismos en las heces.',
+                'tipo_examen_id' => 14, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Consistencia y color',
+                'descripcion' => 'Analisis del contenido de las heces.',
+                'tipo_examen_id' => 14,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
+        $analisisSecrecionesRespiratorias = [
+            [
+                'nombre' => 'Bacterias patógenas',
+                'descripcion' => 'Cultivo de secreciones respiratorias para identificar bacterias patógenas.',
+                'tipo_examen_id' => 15, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Infecciones respiratorias',
+                'descripcion' => 'Bronquitis, neumonia, fibritis.',
+                'tipo_examen_id' => 15,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
+        $analisisSecrecionesOculares = [
+            [
+                'nombre' => 'Composición',
+                'descripcion' => 'Evaluación de la composición.',
+                'tipo_examen_id' => 16, // ID del tipo de examen relacionado
+                'creado_por' => 1, // ID del usuario que creó el registro
+                'created_at' => now()
+            ],
+            [
+                'nombre' => 'Infecciones oculares',
+                'descripcion' => 'Identificación de infecciones oculares y trastornos alérgicos.',
+                'tipo_examen_id' => 16,
+                'creado_por' => 1,
+                'created_at' => now()
+            ],
+        ];
+
 
 
         // Insertar los registros en la tabla items
@@ -504,5 +606,11 @@ class ItemsTableSeeder extends Seeder
         DB::table('items')->insert($panelRenalItems);
         DB::table('items')->insert($pruebaEnfermedadesInfecciosasItems);
         DB::table('items')->insert($evaluacionHormonasItems);
+        DB::table('items')->insert($evaluacionBiopsiaTejido);
+        DB::table('items')->insert($evaluacionCitologiaTejido);
+        DB::table('items')->insert($analisisHecesSangreOculta);
+        DB::table('items')->insert($analisisCoproscopia);
+        DB::table('items')->insert($analisisSecrecionesRespiratorias);
+        DB::table('items')->insert($analisisSecrecionesOculares);
     }
 }

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EmpleadosTableSeeder::class);
         $this->call(ClientesTableSeeder::class);
         $this->call(TipoSoportesTableSeeder::class);
+        $this->call(TipoMuestraTableSeeder::class);
         $this->call(TipoExamenesTableSeeder::class);
         $this->call(UnidadMedidasTableSeeder::class);
         $this->call(EstadoSolicitudesTableSeeder::class);
@@ -27,7 +28,6 @@ class DatabaseSeeder extends Seeder
 
         // Seeders para tablas intermedias o relacionadas
         $this->call(ItemsTableSeeder::class);
-        $this->call(TipoMuestraTableSeeder::class);
         $this->call(TipoRecipienteTableSeeder::class);
         $this->call(DepartamentosTableSeeder::class);
         $this->call(TipoDocumentoAnalisisTableSeeder::class);
