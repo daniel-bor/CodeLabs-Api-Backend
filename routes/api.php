@@ -49,6 +49,7 @@ Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor'
 //Solicitudes
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->patch('/solicitudes/{solicitud_id}/asignacion', [SolicitudController::class, 'assignToRole']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->delete('/solicitudes/{solicitud_id}', [SolicitudController::class, 'deleteById']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/items/{solicitud_id}', [SolicitudController::class, 'getItems']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalleById']);
