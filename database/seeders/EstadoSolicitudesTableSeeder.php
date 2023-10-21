@@ -16,56 +16,68 @@ class EstadoSolicitudesTableSeeder extends Seeder
         // Definir los registros de estados de solicitudes
         $estadosSolicitudes = [
             [
-                'nombre' => 'Creada',
+                'nombre' => 'Creado',
                 'descripcion' => 'Solicitud pendiente de procesamiento',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Enviada',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Revisado',
+                'descripcion' => 'Solicitud correcta para analisis',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Recibida',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Asociado',
+                'descripcion' => 'Solicitud asociada a muestras e items',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Asignada',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Validado',
+                'descripcion' => 'Solicitud con muestras e items correctos',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'En Analisis',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Analisis', //****************Actualizar estado al abrir solicitud
+                'descripcion' => 'Solicitud asignada a un analista',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Espera',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Completado',
+                'descripcion' => 'Solicitud concluida para revisión',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Revision',
+                'nombre' => 'Revision final', //****************Actualizar estado al abrir solicitud
                 'descripcion' => 'Solicitud en proceso de análisis',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
                 'nombre' => 'Finalizado',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'descripcion' => 'Solicitud finalizada',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Rechazada',
-                'descripcion' => 'Solicitud en proceso de análisis',
+                'nombre' => 'Cancelado',
+                'descripcion' => 'Solicitud cancelada por el cliente',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Espera',
+                'descripcion' => 'Solicitud en pausa para atención',
+                'creado_por' => 1, // ID del usuario que creó este estado
+                'estado' => 1,
+            ],
+            [
+                'nombre' => 'Rechazado',
+                'descripcion' => 'Solicitud rechazada por el empleado',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
@@ -73,25 +85,25 @@ class EstadoSolicitudesTableSeeder extends Seeder
 
             //Estados Muestras
             [
-                'nombre' => 'Creada',
+                'nombre' => 'Creado',
                 'descripcion' => 'Muestra creada en solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Asignada',
+                'nombre' => 'Asignado',
                 'descripcion' => 'Muestra contiene items asignados',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Caducada',
+                'nombre' => 'Caducado',
                 'descripcion' => 'Muestra caduco en solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,
             ],
             [
-                'nombre' => 'Eliminada',
+                'nombre' => 'Eliminado',
                 'descripcion' => 'Muestra fue retirada de solicitud',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1,

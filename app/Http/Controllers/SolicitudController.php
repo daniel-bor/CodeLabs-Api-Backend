@@ -213,6 +213,7 @@ class SolicitudController extends Controller
             'cliente' => $solicitud->cliente->usuario->name,
             'no_expediente' => $solicitud->cliente->no_expediente,
             'fecha_creacion' => $solicitud->created_at,
+            'estado_solicitud' => $solicitud->estadoSolicitud->nombre,
             'muestras' => [],
             'items_disponibles' => []
         ];

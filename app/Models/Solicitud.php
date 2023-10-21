@@ -85,6 +85,7 @@ class Solicitud extends Model
         'direccion',
         'longitud',
         'latitud',
-        'codigo'
+        'codigo',
+        'estado'
     ];
 }
