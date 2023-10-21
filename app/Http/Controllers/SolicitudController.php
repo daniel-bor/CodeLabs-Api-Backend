@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Solicitud;
-use App\Models\TrazabilidadSolicitud;
 use Exception;
+use App\Models\Solicitud;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\EstadoSolicitud;
+use App\Models\TrazabilidadSolicitud;
 use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
@@ -298,5 +299,10 @@ class SolicitudController extends Controller
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 500);
         }
+    }
+
+    public function getEstados(){
+        $estados = EstadoSolicitud::select('id','nombre')->where('estado',1)->get();
+        return response()->json(['data' => $estados], 200);
     }
 }

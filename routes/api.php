@@ -55,14 +55,15 @@ Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor'
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalleById']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
+Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/estados', [SolicitudController::class, 'getEstados']);
 
 //Muestras
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras', [MuestraController::class, 'store']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras/items', [MuestraController::class, 'asociarItems']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/detalle/{muestra_id}', [MuestraController::class, 'getDetalleById']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos/{tipo_muestra_id}/recipientes', [MuestraController::class, 'getRecipientesTipoMuestra']);
 Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->delete('/muestras/{muestra_id}', [MuestraController::class, 'deleteById']);
 Route::middleware('jwt.auth')->get('/muestras/tipos', [MuestraController::class, 'getTiposMuestras']);
+Route::get('/muestras/detalle/{muestra_id}', [MuestraController::class, 'getDetalleById']);
 
 //Unidad de medida:
 Route::middleware('jwt.auth')->get('/medidas', [MuestraController::class, 'getUnidadesMedida']);

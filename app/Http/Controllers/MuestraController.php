@@ -83,10 +83,10 @@ class MuestraController extends Controller
         $data = $request->json()->all();
 
         try {
-            foreach ($data as $itemData) {
-                $validator = Validator::make($itemData, [
+            foreach ($data as $muestraData) {
+                $validator = Validator::make($muestraData, [
                     'id' => 'required|exists:muestras,id',
-                    'items' => 'required|array',
+                    'items' => 'array',
                     'items.*.id' => [Rule::exists('items', 'id')->where('estado', 1)],
                 ]);
 
@@ -94,14 +94,14 @@ class MuestraController extends Controller
                     return response()->json(['message' => 'Error de validación', 'errors' => $validator->errors()], 400);
                 }
 
-                $muestra = Muestra::findOrFail($itemData['id']);
-                $items = $itemData['items'];
+                $muestra = Muestra::findOrFail($muestraData['id']);
+                $items = $muestraData['items'];
 
                 // Elimina los registros existentes y establece las nuevas relaciones
                 $muestra->items()->sync(collect($items)->pluck('id'));
-
-                return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
             }
+
+            return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error interno del servidor', 'error' => $e->getMessage()], 500);
         }
