@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('direccion', 100)->notNull();
             $table->string('longitud')->notNull();
             $table->string('latitud')->notNull();
-            $table->unsignedBigInteger('estado')->notNull()->default(1);
+            $table->unsignedBigInteger('estado')->default(1);
             $table->timestamps();
             $table->softDeletes();
 

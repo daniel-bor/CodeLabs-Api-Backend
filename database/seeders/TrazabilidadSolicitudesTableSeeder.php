@@ -25,7 +25,7 @@ class TrazabilidadSolicitudesTableSeeder extends Seeder
             ],
             [
                 'solicitud_id' => 1, // ID de la solicitud relacionada
-                'estado_solicitud_id' => 2, // ID del estado de la solicitud relacionado
+                'estado_solicitud_id' => 1, // ID del estado de la solicitud relacionado
                 'observaciones' => 'Observación 2',
                 'usuario_asignador_id' => 4,
                 'usuario_asignado_id' => 3,
@@ -43,11 +43,35 @@ class TrazabilidadSolicitudesTableSeeder extends Seeder
                 'solicitud_id' => 2, // ID de la solicitud relacionada
                 'estado_solicitud_id' => 2, // ID del estado de la solicitud relacionado
                 'observaciones' => 'Observación 2',
-                'usuario_asignador_id' => 1,
+                'usuario_asignador_id' => 3,
+                'usuario_asignado_id' => 4,
+                'created_at' => now()
+            ],
+            // Agregar más registros de trazabilidad_solicitudes aquí
+            [
+                'solicitud_id' => 4, // ID de la solicitud relacionada
+                'estado_solicitud_id' => 1, // ID del estado de la solicitud relacionado
+                'observaciones' => 'Observación 2',
+                'usuario_asignador_id' => null,
+                'usuario_asignado_id' => 4,
+                'created_at' => now()->subDays(1)
+            ],
+            [
+                'solicitud_id' => 5, // ID de la solicitud relacionada
+                'estado_solicitud_id' => 1, // ID del estado de la solicitud relacionado
+                'observaciones' => 'Observación 2',
+                'usuario_asignador_id' => null,
+                'usuario_asignado_id' => 4,
+                'created_at' => now()->subDays(1)
+            ],
+            [
+                'solicitud_id' => 6, // ID de la solicitud relacionada
+                'estado_solicitud_id' => 1, // ID del estado de la solicitud relacionado
+                'observaciones' => 'Observación 2',
+                'usuario_asignador_id' => null,
                 'usuario_asignado_id' => 4,
                 'created_at' => now()
             ]
-            // Agregar más registros de trazabilidad_solicitudes aquí
         ];
 
         // Insertar los registros en la tabla trazabilidad_solicitudes

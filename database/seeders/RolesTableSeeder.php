@@ -15,12 +15,10 @@ class RolesTableSeeder extends Seeder
     {
         // Definir los 10 registros de roles
         $roles = [
-            ['nombre' => 'Administrador', 'descripcion' => 'Rol de administrador'],
-            ['nombre' => 'Revisor', 'descripcion' => 'Rol de revisor'],
-            ['nombre' => 'Tecnico', 'descripcion' => 'Rol de técnico'],
-            ['nombre' => 'Asignador', 'descripcion' => 'Rol de asignador'],
-            ['nombre' => 'Analista', 'descripcion' => 'Rol de analista']
-            // Agregar otros roles aquí
+            ['nombre' => 'ADMINISTRADOR', 'descripcion' => 'Rol de administrador'],
+            ['nombre' => 'CENTRALIZADOR', 'descripcion' => 'Rol de asignador'],
+            ['nombre' => 'TECNICO', 'descripcion' => 'Rol de técnico'],
+            ['nombre' => 'ANALISTA', 'descripcion' => 'Rol de analista']
         ];
 
         // Insertar los registros en la tabla roles

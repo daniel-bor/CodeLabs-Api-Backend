@@ -150,6 +150,7 @@ class MuestraController extends Controller
                 return [
                     'id' => $item->id ?? null,
                     'nombre' => $item->nombre ?? null,
+                    'tipo_examen' => $item->tipoExamen->nombre ?? null,
                 ];
             }),
         ];

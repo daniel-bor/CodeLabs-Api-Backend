@@ -27,7 +27,7 @@ class Solicitud extends Model
     //Relacion de usuario que esta asignado
     public function usuarioAsignado()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
+        return $this->belongsToMany(User::class, 'trazabilidad_solicitudes','solicitud_id', 'usuario_asignado_id')
         ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
         ->limit(1); // Limita a un solo registro (el más reciente)
     }
@@ -35,9 +35,8 @@ class Solicitud extends Model
     //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {
-        return $this->belongsTo(EstadoSolicitud::class, 'id', 'id');
+        return $this->belongsTo(EstadoSolicitud::class, 'estado');
     }
-
 
     //Relacion para mostrar la cantidad de muestras
     public function muestras()
@@ -60,7 +59,7 @@ class Solicitud extends Model
 
     public function usuarioAsignador()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones', 'solicitud_id', 'usuario_asignador_id')
+        return $this->belongsToMany(User::class, 'trazabilidad_solicitudes', 'solicitud_id', 'usuario_asignador_id')
             ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
             ->limit(1); // Limita a un solo registro (el más reciente)
     }
@@ -74,6 +73,16 @@ class Solicitud extends Model
     public function documentos()
     {
         return $this->hasMany(Documento::class, 'solicitud_id');
+    }
+
+    public function estadoTrazabilidad()
+    {
+        return $this->belongsToMany(EstadoSolicitud::class, 'trazabilidad_solicitud', 'estado_solicitud_id','solicitud_id');
+    }
+
+    public function trazabilidad()
+    {
+        return $this->hasMany(TrazabilidadSolicitud::class, 'solicitud_id');
     }
 
 

@@ -36,7 +36,7 @@ class SolicitudesTableSeeder extends Seeder
                 'direccion' => 'Dirección de la solicitud 2', // Agregamos la dirección
                 'longitud' => "54321",
                 'latitud' => "98765",
-                'estado' => 1,
+                'estado' => 2,
                 'created_at' => now()
             ],
             [
@@ -49,6 +49,44 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 2,
+                'created_at' => now(),
+            ],
+
+            //Solicitudes de prueba
+            [
+                'tipo_soporte_id' => 2, // ID del tipo de soporte
+                'codigo' => 'EX-07102023-18737',
+                'no_soporte' => 'SOL-004',
+                'descripcion' => 'Descripción de la solicitud 3',
+                'cliente_id' => 1, // ID del cliente relacionado
+                'direccion' => 'Dirección de la solicitud 3', // Agregamos la dirección
+                'longitud' => "54321",
+                'latitud' => "98765",
+                'estado' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'tipo_soporte_id' => 2, // ID del tipo de soporte
+                'codigo' => 'EX-07102023-18738',
+                'no_soporte' => 'SOL-005',
+                'descripcion' => 'Descripción de la solicitud 3',
+                'cliente_id' => 1, // ID del cliente relacionado
+                'direccion' => 'Dirección de la solicitud 3', // Agregamos la dirección
+                'longitud' => "54321",
+                'latitud' => "98765",
+                'estado' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'tipo_soporte_id' => 2, // ID del tipo de soporte
+                'codigo' => 'EX-07102023-18739',
+                'no_soporte' => 'SOL-006',
+                'descripcion' => 'Descripción de la solicitud 3',
+                'cliente_id' => 1, // ID del cliente relacionado
+                'direccion' => 'Dirección de la solicitud 3', // Agregamos la dirección
+                'longitud' => "54321",
+                'latitud' => "98765",
+                'estado' => 1,
                 'created_at' => now(),
             ],
         ];
