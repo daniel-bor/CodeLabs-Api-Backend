@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Muestra;
 use App\Models\TipoMuestra;
 use Illuminate\Support\Str;
 use App\Models\UnidadMedida;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -38,6 +41,43 @@ class MuestraController extends Controller
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 422);
         }
+    }
+
+
+    public function exportToPDF($muestra_id)
+    {
+
+        try {
+
+            $muestra = Muestra::with(['tipoMuestra', 'tipoRecipiente', 'unidadMedida', 'estadoMuestra'])
+                ->select('id', 'codigo', 'tipo_muestra_id', 'tipo_recipiente_id', 'cantidad_unidades', 'unidad_medida_id', 'fecha_vencimiento', 'created_at', 'estado')
+                ->find($muestra_id);
+
+            if (!$muestra) {
+                return response()->json(['message' => 'Muestra no encontrada'], 404);
+            }
+
+            $data = [[
+                'id' => $muestra->id,
+                'codigo' => $muestra->codigo,
+                'muestra' => $muestra->tipoMuestra->nombre,
+                'recipiente' => $muestra->tipoRecipiente->nombre,
+                'unidades' => $muestra->cantidad_unidades,
+                'medida' => $muestra->unidadMedida->nombre,
+                'vencimiento' => Carbon::parse($muestra->fecha_vencimiento)->format('d/m/Y'),
+                'creacion' => Carbon::parse($muestra->created_at)->format('d/m/Y'),
+                'estado' => $muestra->estadoMuestra->nombre
+            ]];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('landscape');
+            $pdf->loadView('pdf', compact('data'));
+            
+            return $pdf->stream();
+        } catch (Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 422);
+        }
+
     }
 
     public function getTiposMuestras()
