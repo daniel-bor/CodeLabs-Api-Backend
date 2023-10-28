@@ -95,10 +95,16 @@ class EstadoSolicitudService
     {
         $ultimoEstado = $solicitud->estadoSolicitud->nombre;
 
-        return $ultimoEstado == 'INICIADO' && $solicitud->itemsMuestras->isEmpty()
-            ? false
-            : $ultimoEstado == 'ANALISIS' && $solicitud->muestras->pluck('itemsMuestras')->pluck('documentosAnalisis')->contains(function ($documentos) {
-                return $documentos->isNotEmpty();
-            });
+        if ($ultimoEstado == 'INICIADO' && $solicitud->itemsMuestras->count() === 0) {
+            return false;
+        }
+
+        if ($ultimoEstado == 'ANALISIS' && !$solicitud->muestras->pluck('itemsMuestras')->pluck('documentosAnalisis')->contains(function ($documentos) {
+            return $documentos->isNotEmpty();
+        })) {
+            return false;
+        }
+
+        return true;
     }
 }
