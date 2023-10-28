@@ -32,6 +32,12 @@ class Solicitud extends Model
         ->limit(1); // Limita a un solo registro (el más reciente)
     }
 
+    //Relacion de usuario que esta asignado
+    public function empleadoAsignado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id', 'usuario_id')->first();
+    }
+
     //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {

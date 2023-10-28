@@ -38,7 +38,7 @@ class SolicitudController extends Controller
 
         $usuarioActualId = $request->user()->id; // Obtiene el usuario autenticado
 
-        $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'estado', 'cliente_id', 'created_at')
+        $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'estado', 'cliente_id', 'empleado_id', 'created_at')
             ->with('usuarioAsignado')
             ->with('estadoSolicitud')
             ->with('cliente')
@@ -67,9 +67,7 @@ class SolicitudController extends Controller
             ->when($request->has('EstadoSolicitud'), function ($query) use ($request) {
                 return $query->where('estado', $request->input('EstadoSolicitud'));
             })
-            ->whereHas('trazabilidad', function ($query) use ($usuarioActualId) {
-                $query->orderBy('id', 'desc')->groupBy('solicitud_id')->havingRaw('MAX(id)')->where('usuario_asignado_id', $usuarioActualId);
-            })
+            ->where('empleado_id', $usuarioActualId)
             ->get()
             ->map(function ($item) {
                 $solicitudEstado = $item->estadoSolicitud;
@@ -328,7 +326,7 @@ class SolicitudController extends Controller
             $request->validate([
                 'solicitud_id' => 'required|exists:solicitudes,id',
                 'accion' => 'required|string|in:SIGUIENTE,ANTERIOR',
-                'observaciones' => 'string|max:100',
+                'observaciones' => 'max:100',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
@@ -336,7 +334,10 @@ class SolicitudController extends Controller
 
         try {
             $solicitud = Solicitud::find($request->input('solicitud_id'));
-            $this->_solicitudService->asignar($solicitud, $request->input('observaciones'));
+            if (!$solicitud || ($solicitud->empleado_id != $request->user()->id)) {
+                return response()->json(['errors' => ['message' => 'Solicitud no asignada, revise los datos enviados']], 422);
+            }
+            $this->_solicitudService->asignar($solicitud, $request->input('observaciones')??"ASIGNACION");
             return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 500);

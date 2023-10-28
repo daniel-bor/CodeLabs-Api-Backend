@@ -24,7 +24,8 @@ class SolicitudesTableSeeder extends Seeder
                 'direccion' => 'Dirección de la solicitud 1', // Agregamos la dirección
                 'longitud' => "12345",
                 'latitud' => "67890",
-                'estado' => 1,
+                'estado' => 2,
+                'empleado_id' => 5, // ID del empleado relacionado
                 'created_at' => now()->subDays(2)
             ],
             [
@@ -37,6 +38,7 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 2,
+                'empleado_id' => 5, // ID del empleado relacionado
                 'created_at' => now()
             ],
             [
@@ -49,6 +51,7 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 2,
+                'empleado_id' => 5, // ID del empleado relacionado
                 'created_at' => now(),
             ],
 
@@ -63,6 +66,7 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 1,
+                'empleado_id' => 4, // ID del empleado relacionado
                 'created_at' => now(),
             ],
             [
@@ -75,6 +79,7 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 1,
+                'empleado_id' => 4, // ID del empleado relacionado
                 'created_at' => now(),
             ],
             [
@@ -87,6 +92,7 @@ class SolicitudesTableSeeder extends Seeder
                 'longitud' => "54321",
                 'latitud' => "98765",
                 'estado' => 1,
+                'empleado_id' => 4, // ID del empleado relacionado
                 'created_at' => now(),
             ],
         ];

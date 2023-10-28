@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('longitud')->notNull();
             $table->string('latitud')->notNull();
             $table->unsignedBigInteger('estado')->default(1);
+            $table->unsignedBigInteger('empleado_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->foreign('tipo_soporte_id')->references('id')->on('tipo_soportes');
             $table->foreign('cliente_id')->references('usuario_id')->on('clientes');
             $table->foreign('estado')->references('id')->on('estado_solicitudes');
+            $table->foreign('empleado_id')->references('usuario_id')->on('empleados');
         });
     }
 

@@ -84,6 +84,8 @@ class EstadoSolicitudService
         }elseif ($to == 'ANTERIOR') {
             $nuevaTrazabilidad->usuario_asignado_id = TrazabilidadSolicitud::where('solicitud_id', $solicitud->id)->orderBy('created_at', 'desc')->limit(3)->skip(1)->first();
         }
+        $solicitud->empleado_id = $nuevaTrazabilidad->usuario_asignado_id;
+        $solicitud->save();
         $nuevaTrazabilidad->save();
     }
 
@@ -93,6 +95,8 @@ class EstadoSolicitudService
         $nuevaTrazabilidad->solicitud_id = $solicitud->id;
         $nuevaTrazabilidad->estado_solicitud_id = $solicitud->estado;
         $nuevaTrazabilidad->usuario_asignado_id = $this->obtenerEmpleadoPorRol($solicitud->estadoSolicitud->empleadoRol->id);
+        $solicitud->empleado_id = $nuevaTrazabilidad->usuario_asignado_id;
+        $solicitud->save();
         $nuevaTrazabilidad->save();
     }
 }
