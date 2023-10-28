@@ -10,6 +10,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TipoSoporteController;
 use App\Models\Muestra;
 use App\Models\UnidadMedida;
+use Illuminate\Support\Facades\App;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,3 +71,4 @@ Route::middleware('jwt.auth')->get('/medidas', [MuestraController::class, 'getUn
 
 //TEST GRUPO 4
 Route::get('/solicitudes/test', [SolicitudController::class, 'index']);
+Route::get('/exportToPDF/{muestra_id}', [MuestraController::class, 'exportToPDF']);
