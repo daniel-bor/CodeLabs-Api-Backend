@@ -71,11 +71,6 @@ class Solicitud extends Model
     }
 
     //Relacion para obtener la cantidad de documento delas muestras
-    public function documentosMuestra()
-    {
-        return $this->hasMany(Documento::class, 'solicitud_id', 'id');
-    }
-
     public function documentos()
     {
         return $this->hasMany(Documento::class, 'solicitud_id');

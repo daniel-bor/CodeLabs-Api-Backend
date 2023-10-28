@@ -343,5 +343,4 @@ class SolicitudController extends Controller
             return response()->json(['errors' => $e->getMessage()], 500);
         }
     }
-
 }
