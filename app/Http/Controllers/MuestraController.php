@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Muestra;
+use App\Models\Solicitud;
 use App\Models\TipoMuestra;
 use Illuminate\Support\Str;
 use App\Models\UnidadMedida;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -30,12 +32,18 @@ class MuestraController extends Controller
         }
 
         try {
+            $solicitud = Solicitud::find($request->solicitud_id);
+            $estadoIniciado = DB::table('estados_solicitud')->where('nombre', 'INICIADO')->first();
+            DB::beginTransaction();
             $codigoMuestra = $this->generateMuestraCode($request->tipo_muestra_id);
             $request->merge(['codigo' => $codigoMuestra]);
             Muestra::create($request->all());
-
+            $solicitud->estado = $estadoIniciado->id;
+            $solicitud->save();
+            DB::commit();
             return response()->json(['message' => 'Muestra creada con éxito'], 201);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json(['errors' => $e->getMessage()], 422);
         }
     }
