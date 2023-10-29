@@ -44,7 +44,7 @@ class MuestraController extends Controller
             return response()->json(['message' => 'Muestra creada con éxito'], 201);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['errors' => $e->getMessage()], 422);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 422);
         }
     }
 
@@ -55,7 +55,7 @@ class MuestraController extends Controller
 
             return response()->json(['data' => $tiposMuestras], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -71,7 +71,7 @@ class MuestraController extends Controller
             })->values();
             return response()->json(['data' => $tipoRecipientes], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -82,7 +82,7 @@ class MuestraController extends Controller
 
             return response()->json(['data' => $unidadesMedida], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -99,7 +99,7 @@ class MuestraController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json(['message' => 'Error de validación', 'errors' => $validator->errors()], 400);
+                    return response()->json(['errors' => $validator->errors()], 400);
                 }
 
                 $muestra = Muestra::findOrFail($muestraData['id']);
@@ -111,7 +111,7 @@ class MuestraController extends Controller
 
             return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error interno del servidor', 'error' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -189,7 +189,7 @@ class MuestraController extends Controller
 
             return response()->json(['message' => 'Muestra eliminada con éxito'], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 }

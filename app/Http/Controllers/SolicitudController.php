@@ -173,7 +173,7 @@ class SolicitudController extends Controller
 
 
         if (!$solicitud) {
-            return response()->json(['error' => 'Solicitud no encontrada'], 404);
+            return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 404);
         }
 
         $trazabilidad = TrazabilidadSolicitud::with('estadoSolicitud')
@@ -293,7 +293,7 @@ class SolicitudController extends Controller
 
             return response()->json(['data' => $itemsSeleccionados], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -311,7 +311,7 @@ class SolicitudController extends Controller
             $solicitud->delete();
             return response()->json(['message' => 'Solicitud eliminada correctamente'], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -357,7 +357,7 @@ class SolicitudController extends Controller
                 return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
             }
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 }
