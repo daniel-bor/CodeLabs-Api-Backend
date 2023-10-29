@@ -35,7 +35,7 @@ class Solicitud extends Model
     //Relacion de usuario que esta asignado
     public function empleadoAsignado()
     {
-        return $this->belongsTo(Empleado::class, 'empleado_id', 'usuario_id')->first();
+        return $this->belongsTo(Empleado::class, 'empleado_id', 'usuario_id');
     }
 
     //Relacion para el estado de solicitud
@@ -53,13 +53,13 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
-        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id')->where('items_solicitud_analisis.estado', 1);
     }
 
     // Relacion para obtener los item de las muestras relacionadas a las muestras de solicitud
     public function itemsMuestras()
     {
-        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
+        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id')->where('items_muestras.estado', 1);
     }
 
 

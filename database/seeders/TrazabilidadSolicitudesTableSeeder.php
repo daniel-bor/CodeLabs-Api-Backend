@@ -32,6 +32,14 @@ class TrazabilidadSolicitudesTableSeeder extends Seeder
                 'created_at' => now()->subDays(1)
             ],
             [
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'estado_solicitud_id' => 3, // ID del estado de la solicitud relacionado
+                'observaciones' => 'Observación 3',
+                'usuario_asignador_id' => 5,
+                'usuario_asignado_id' => 5,
+                'created_at' => now()->subDays(1)
+            ],
+            [
                 'solicitud_id' => 2, // ID de la solicitud relacionada
                 'estado_solicitud_id' => 1, // ID del estado de la solicitud relacionado
                 'observaciones' => 'Observación 2',
@@ -43,7 +51,15 @@ class TrazabilidadSolicitudesTableSeeder extends Seeder
                 'solicitud_id' => 2, // ID de la solicitud relacionada
                 'estado_solicitud_id' => 2, // ID del estado de la solicitud relacionado
                 'observaciones' => 'Observación 2',
-                'usuario_asignador_id' => 1,
+                'usuario_asignador_id' => 4,
+                'usuario_asignado_id' => 5,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 2, // ID de la solicitud relacionada
+                'estado_solicitud_id' => 3, // ID del estado de la solicitud relacionado
+                'observaciones' => 'Observación 3',
+                'usuario_asignador_id' => 5,
                 'usuario_asignado_id' => 5,
                 'created_at' => now()
             ],
@@ -53,7 +69,7 @@ class TrazabilidadSolicitudesTableSeeder extends Seeder
                 'estado_solicitud_id' => 2, // ID del estado de la solicitud relacionado
                 'observaciones' => 'Observación 3',
                 'usuario_asignador_id' => null,
-                'usuario_asignado_id' => 5,
+                'usuario_asignado_id' => 4,
                 'created_at' => now()->subDays(1)
             ],
             [

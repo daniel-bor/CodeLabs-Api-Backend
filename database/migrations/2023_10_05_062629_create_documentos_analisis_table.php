@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('item_muestra_id')->notNull();
             $table->unsignedBigInteger('tipo_documento_analisis_id')->notNull();
             $table->string('conclusion', 100)->notNull();
-            $table->timestamp('fecha_creacion')->default(now());
-            $table->boolean('estado')->default(true);
+            $table->integer('estado')->default(1);
+            $table->timestamps();
 
             // Definición de claves foráneas
             $table->foreign('item_muestra_id')->references('id')->on('items_muestras');

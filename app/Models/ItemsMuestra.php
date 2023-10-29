@@ -25,6 +25,6 @@ class ItemsMuestra extends Model
 
     public function documentosAnalisis()
     {
-        return $this->hasMany(DocumentoAnalisis::class, 'item_muestra_id');
+        return $this->hasOne(DocumentoAnalisis::class, 'item_muestra_id', 'id');
     }
 }

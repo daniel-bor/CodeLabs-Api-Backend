@@ -126,6 +126,10 @@ class MuestraController extends Controller
             'items',
         ])->find($muestra_id);
 
+        if(!$muestra) {
+            return response()->json(['message' => 'La muestra no existe'], 404);
+        }
+
         // Formatear los datos necesarios
         $datos = [
             'codigo_solicitud' => $muestra->solicitud->codigo ?? null,

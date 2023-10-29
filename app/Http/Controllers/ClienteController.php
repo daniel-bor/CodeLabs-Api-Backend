@@ -6,15 +6,31 @@ use App\Models\Cliente;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todos los clientes
-        $clientes = Cliente::all();
+        try {
+            $request->validate([
+                'NoExpediente' => 'string|numero_expediente',
+                'NIT' => 'digits_between:3,12'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
 
-        return response()->json(['data' => $clientes], 200);
+        $cliente = Cliente::with('usuario')
+            ->when($request->has('NoExpediente'), function ($query) use ($request) {
+                return $query->where('no_expediente', $request->input('NoExpediente'));
+            })
+            ->when($request->has('NIT'), function ($query) use ($request) {
+                return $query->where('nit', $request->input('NIT'));
+            })
+            ->first();
+
+        return response()->json(['data' => $cliente], 200);
     }
 
     public function show($cliente_id)

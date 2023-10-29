@@ -2,25 +2,57 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\Empleado;
-use App\Models\EstadoSolicitud;
 use App\Models\Solicitud;
+use App\Models\EstadoSolicitud;
+use Illuminate\Support\Facades\DB;
 use App\Models\TrazabilidadSolicitud;
 
 class EstadoSolicitudService
 {
-    public function asignar(Solicitud $solicitud, string $observaciones): void
+    public function continuar(Solicitud $solicitud, string $observaciones): bool
     {
-        if ($this->validarAccion($solicitud)) {
-            $this->cambiarEstado($solicitud, 'SIGUIENTE');
-            $this->actualizarTrazabilidad($solicitud, 'SIGUIENTE', $observaciones);
+        DB::beginTransaction();
+
+        try {
+            if ($this->validarRequisitosContinuar($solicitud)) {
+                $solicitud->estado = $solicitud->estadoSolicitud->estadoSiguiente->id;
+                $nuevaTrazabilidad = $this->generarTrazabilidad($solicitud, $observaciones);
+                $nuevaTrazabilidad->usuario_asignado_id = $this->obtenerEmpleadoPorRol($solicitud->estadoSolicitud->estadoSiguiente->empleadoRol->id);
+                $solicitud->empleado_id = $nuevaTrazabilidad->usuario_asignado_id;
+                $nuevaTrazabilidad->save();
+                $solicitud->save();
+            } else {
+                return false;
+            }
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return false;
         }
     }
 
-    public function rechazar(Solicitud $solicitud, string $observaciones): void
+    public function rechazar(Solicitud $solicitud, string $observaciones): bool
     {
-        $this->cambiarEstado($solicitud, 'ANTERIOR');
-        $this->actualizarTrazabilidad($solicitud, 'ANTERIOR', $observaciones);
+        DB::beginTransaction();
+
+        try {
+            $estadoAnterior = $solicitud->trazabilidad()->latest()->skip(1)->first();
+            $usuarioAnterior = $estadoAnterior->usuarioAsignado;
+            $solicitud->estado = $solicitud->estadoSolicitud->estadoAnterior->id;
+            $solicitud->empleado_id = $usuarioAnterior->id;
+            $nuevaTrazabilidad = $this->generarTrazabilidad($solicitud, $observaciones);
+            $nuevaTrazabilidad->usuario_asignado_id = $usuarioAnterior->id;
+            $nuevaTrazabilidad->save();
+            $solicitud->save();
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return false;
+        }
     }
 
     public function pausar(Solicitud $solicitud): void
@@ -32,16 +64,6 @@ class EstadoSolicitudService
     public function cancelar(Solicitud $solicitud): void
     {
         $solicitud->estado = EstadoSolicitud::where('nombre', 'CANCELADO')->first()->id;
-        $solicitud->save();
-    }
-
-    public function cambiarEstado(Solicitud $solicitud, string $to): void
-    {
-        if ($to == 'SIGUIENTE') {
-            $solicitud->estado = $solicitud->estadoSolicitud->estadoSiguiente->id;
-        } elseif ($to == 'ANTERIOR') {
-            $solicitud->estado = $solicitud->estadoSolicitud->estadoAnterior->id;
-        }
         $solicitud->save();
     }
 
@@ -62,7 +84,7 @@ class EstadoSolicitudService
         return $ultimoEstado;
     }
 
-    public function actualizarTrazabilidad(Solicitud $solicitud, string $to, string $observaciones): void
+    public function generarTrazabilidad(Solicitud $solicitud, string $observaciones): TrazabilidadSolicitud
     {
         $trazabilidadActual = $solicitud->trazabilidad()->latest()->first();
         $nuevaTrazabilidad = new TrazabilidadSolicitud();
@@ -70,14 +92,7 @@ class EstadoSolicitudService
         $nuevaTrazabilidad->estado_solicitud_id = $solicitud->estado;
         $nuevaTrazabilidad->observaciones = $observaciones;
         $nuevaTrazabilidad->usuario_asignador_id = $trazabilidadActual->usuario_asignado_id;
-        if ($to == 'SIGUIENTE') {
-            $nuevaTrazabilidad->usuario_asignado_id = $this->obtenerEmpleadoPorRol($solicitud->estadoSolicitud->estadoSiguiente->empleadoRol->id);
-        } elseif ($to == 'ANTERIOR') {
-            $nuevaTrazabilidad->usuario_asignado_id = TrazabilidadSolicitud::where('solicitud_id', $solicitud->id)->orderBy('created_at', 'desc')->limit(3)->skip(1)->first();
-        }
-        $solicitud->empleado_id = $nuevaTrazabilidad->usuario_asignado_id;
-        $solicitud->save();
-        $nuevaTrazabilidad->save();
+        return $nuevaTrazabilidad;
     }
 
     public function crearTrazabilidad(Solicitud $solicitud): void
@@ -91,17 +106,13 @@ class EstadoSolicitudService
         $nuevaTrazabilidad->save();
     }
 
-    private function validarAccion(Solicitud $solicitud): bool
+    private function validarRequisitosContinuar(Solicitud $solicitud): bool
     {
-        $ultimoEstado = $solicitud->estadoSolicitud->nombre;
-
-        if ($ultimoEstado == 'INICIADO' && $solicitud->itemsMuestras->count() === 0) {
+        if ($solicitud->estado == 3 && ($solicitud->itemsMuestras->count() != $solicitud->itemsSolicitados->count())) {
             return false;
         }
 
-        if ($ultimoEstado == 'ANALISIS' && !$solicitud->muestras->pluck('itemsMuestras')->pluck('documentosAnalisis')->contains(function ($documentos) {
-            return $documentos->isNotEmpty();
-        })) {
+        if ($solicitud->estado == 6 && !$solicitud->muestras->pluck('itemsMuestras')->pluck('documentosAnalisis')->count()) {
             return false;
         }
 

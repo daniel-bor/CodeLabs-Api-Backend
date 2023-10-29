@@ -14,11 +14,11 @@ use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
 {
-    private EstadoSolicitudService $_solicitudService;
+    private EstadoSolicitudService $_estadoSolicitudService;
 
-    public function __construct(EstadoSolicitudService $solicitudService)
+    public function __construct(EstadoSolicitudService $estadoSolicitudService)
     {
-        $this->_solicitudService = $solicitudService;
+        $this->_estadoSolicitudService = $estadoSolicitudService;
     }
 
     public function index(Request $request)
@@ -79,7 +79,6 @@ class SolicitudController extends Controller
                     'no_expediente' => $item->cliente->no_expediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? null,
                     'estado_solicitud' => $nombreSolicitudEstado,
                     'fecha_creacion' => $item->created_at
                 ];
@@ -121,7 +120,7 @@ class SolicitudController extends Controller
             $items = collect($validatedData['items'])->pluck('id')->all();
             $solicitud->itemsSolicitados()->attach($items);
             // Creación de la trazabilidad
-            $this->_solicitudService->crearTrazabilidad($solicitud);
+            $this->_estadoSolicitudService->crearTrazabilidad($solicitud);
             return response()->json(['message' => 'Solicitud creada correctamente'], 201);
         } catch (\Exception $e) {
             return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e->getMessage()]], 500);
@@ -185,6 +184,7 @@ class SolicitudController extends Controller
         $response = [
             'id' => $solicitud->id,
             'estado_actual' => $solicitud->estadoSolicitud->nombre,
+            'empleado_actual' => $solicitud->empleadoAsignado->usuario->name ?? null,
             'tiempo_total' => $solicitud->created_at->longAbsoluteDiffForHumans(now()),
             'trazabilidad' => [],
         ];
@@ -315,8 +315,9 @@ class SolicitudController extends Controller
         }
     }
 
-    public function getEstados(){
-        $estados = EstadoSolicitud::select('id','nombre')->where('estado',1)->get();
+    public function getEstados()
+    {
+        $estados = EstadoSolicitud::select('id', 'nombre')->where('estado', 1)->get();
         return response()->json(['data' => $estados], 200);
     }
 
@@ -332,13 +333,29 @@ class SolicitudController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
+        $solicitud = Solicitud::find($request->input('solicitud_id'));
+
+        if (!$solicitud || ($solicitud->empleado_id != $request->user()->id)) {
+            return response()->json(['errors' => ['message' => 'Solicitud no asignada, revise los datos enviados']], 422);
+        }
+
         try {
-            $solicitud = Solicitud::find($request->input('solicitud_id'));
-            if (!$solicitud || ($solicitud->empleado_id != $request->user()->id)) {
-                return response()->json(['errors' => ['message' => 'Solicitud no asignada, revise los datos enviados']], 422);
+            $estadoTransaccion = false;
+            switch ($request->input('accion')) {
+                case 'SIGUIENTE':
+                    $estadoTransaccion = $this->_estadoSolicitudService->continuar($solicitud, $request->input('observaciones') ?? "ASIGNADO POR ACCIÓN DE USUARIO");
+                    break;
+                case 'ANTERIOR':
+                    $estadoTransaccion = $this->_estadoSolicitudService->rechazar($solicitud, $request->input('observaciones') ?? "RECHAZADO");
+                    break;
+                default:
+                    return response()->json(['errors' => ['message' => 'Acción no permitida']], 422);
             }
-            $this->_solicitudService->asignar($solicitud, $request->input('observaciones')??"ASIGNACION");
-            return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
+            if(!$estadoTransaccion){
+                return response()->json(['errors' => ['message' => 'No se pudo realizar la acción']], 422);
+            }else{
+                return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
+            }
         } catch (Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 500);
         }
