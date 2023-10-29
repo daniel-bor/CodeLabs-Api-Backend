@@ -33,7 +33,7 @@ class MuestraController extends Controller
 
         try {
             $solicitud = Solicitud::find($request->solicitud_id);
-            $estadoIniciado = DB::table('estados_solicitudes')->where('nombre', 'INICIADO')->first();
+            $estadoIniciado = DB::table('estado_solicitudes')->where('nombre', 'INICIADO')->first();
             DB::beginTransaction();
             $codigoMuestra = $this->generateMuestraCode($request->tipo_muestra_id);
             $request->merge(['codigo' => $codigoMuestra]);
