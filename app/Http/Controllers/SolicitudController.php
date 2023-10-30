@@ -8,8 +8,10 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\EstadoSolicitud;
+use Illuminate\Validation\Rule;
 use App\Models\TrazabilidadSolicitud;
 use App\Services\EstadoSolicitudService;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
@@ -351,13 +353,38 @@ class SolicitudController extends Controller
                 default:
                     return response()->json(['errors' => ['message' => 'Acción no permitida']], 422);
             }
-            if(!$estadoTransaccion){
+            if (!$estadoTransaccion) {
                 return response()->json(['errors' => ['message' => 'No se pudo realizar la acción']], 422);
-            }else{
+            } else {
                 return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
             }
         } catch (Exception $e) {
             return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
+        }
+    }
+
+
+    public function previewResultados(Request $request)
+    {
+        $data = $request->json()->all();
+        try {
+            foreach ($data as $muestraData) {
+                $validator = Validator::make($muestraData, [
+                    'muestra_id' => 'required|exists:muestras,id',
+                    'items' => 'array',
+                    'items.*.id' => [Rule::exists('items', 'id')->where('estado', 1)],
+                    'items.*.resultado' => 'required|string|max:130'
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json(['errors' => $validator->errors()], 400);
+                }
+
+
+                return response()->json(['message' => storage_path('app/public/documento.pdf')], 200);
+            }
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
         }
     }
 }

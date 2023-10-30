@@ -55,6 +55,7 @@ Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECN
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/estados', [SolicitudController::class, 'getEstados']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->post('/solicitudes/resultados/preview', [SolicitudController::class, 'previewResultados']);
 
 //Muestras
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->post('/muestras', [MuestraController::class, 'store']);
