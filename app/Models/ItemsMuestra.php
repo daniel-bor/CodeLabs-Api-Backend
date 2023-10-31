@@ -23,7 +23,7 @@ class ItemsMuestra extends Model
         return $this->belongsTo(Muestra::class, 'id_muestra');
     }
 
-    public function documentosAnalisis()
+    public function documentoAnalisis()
     {
         return $this->hasOne(DocumentoAnalisis::class, 'item_muestra_id', 'id');
     }

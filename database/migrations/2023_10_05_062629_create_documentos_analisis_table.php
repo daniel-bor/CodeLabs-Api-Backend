@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('documentos_analisis', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('item_muestra_id')->notNull();
-            $table->unsignedBigInteger('tipo_documento_analisis_id')->notNull();
+            $table->unsignedBigInteger('tipo_documento_analisis_id')->default(1);
             $table->string('conclusion', 100)->notNull();
             $table->integer('estado')->default(1);
             $table->timestamps();

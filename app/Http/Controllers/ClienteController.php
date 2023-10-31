@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ClienteController extends Controller
@@ -44,7 +45,18 @@ class ClienteController extends Controller
     public function listarSolicitudes($cliente_id)
     {
         // Obtener todas las solicitudes del cliente
-        $solicitudes = Solicitud::with('itemsSolicitados')->where('cliente_id', $cliente_id)->get();
+        $solicitudes = Solicitud::with('itemsSolicitados')->with('documento')->where('cliente_id', $cliente_id)->get();
+
+        // Realizar una transformación en la colección para agregar la URL absoluta del documento
+        $solicitudes->transform(function ($solicitud) {
+            $documento = $solicitud->documento;
+            $rutaRelativa = $documento ? $documento->ruta : null;
+
+            // Agregar la URL absoluta a la solicitud
+            $solicitud->url_documento = $rutaRelativa ? url(Storage::url($rutaRelativa)) : null;
+
+            return $solicitud;
+        });
 
         return response()->json(['data' => $solicitudes], 200);
     }
@@ -68,9 +80,9 @@ class ClienteController extends Controller
                 'correo' => $cliente->usuario->email
             ];
         } else {
-            $api_key = env('API_KEY_EMP')??'';
-            $company_id = env('API_ID_EMP')??'';
-            $api_url = env('API_CERT_URL')??'';
+            $api_key = env('API_KEY_EMP') ?? '';
+            $company_id = env('API_ID_EMP') ?? '';
+            $api_url = env('API_CERT_URL') ?? '';
             $response = Http::withHeaders([
                 'X-Authorization' => $api_key,
                 'Accept' => 'application/json',
@@ -90,7 +102,8 @@ class ClienteController extends Controller
     }
 
     //funcion para obtener el expediente por cliente_id
-    public function getExpediente($cliente_id){
+    public function getExpediente($cliente_id)
+    {
         $cliente = Cliente::findOrFail($cliente_id);
 
         $response = [

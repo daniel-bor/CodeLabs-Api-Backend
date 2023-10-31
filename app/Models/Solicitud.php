@@ -73,7 +73,12 @@ class Solicitud extends Model
     //Relacion para obtener la cantidad de documento delas muestras
     public function documentos()
     {
-        return $this->hasMany(Documento::class, 'solicitud_id');
+        return $this->hasMany(Documento::class, 'solicitud_id')->orderBy('created_at', 'desc');
+    }
+
+    public function documento()
+    {
+        return $this->hasOne(Documento::class, 'solicitud_id')->latest();
     }
 
     public function estadoTrazabilidad()

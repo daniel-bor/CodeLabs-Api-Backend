@@ -116,6 +116,10 @@ class EstadoSolicitudService
             return false;
         }
 
+        if ($solicitud->estado == 9) {
+            return false;
+        }
+
         return true;
     }
 }
