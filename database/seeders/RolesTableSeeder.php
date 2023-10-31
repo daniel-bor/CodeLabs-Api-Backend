@@ -18,7 +18,8 @@ class RolesTableSeeder extends Seeder
             ['nombre' => 'ADMINISTRADOR', 'descripcion' => 'Rol de administrador'],
             ['nombre' => 'CENTRALIZADOR', 'descripcion' => 'Rol de asignador'],
             ['nombre' => 'TECNICO', 'descripcion' => 'Rol de técnico'],
-            ['nombre' => 'ANALISTA', 'descripcion' => 'Rol de analista']
+            ['nombre' => 'ANALISTA', 'descripcion' => 'Rol de analista'],
+            ['nombre' => 'CLIENTE', 'descripcion' => 'Cliente en el sistema']
         ];
 
         // Insertar los registros en la tabla roles
