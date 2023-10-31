@@ -108,7 +108,7 @@ class EstadoSolicitudService
 
     private function validarRequisitosContinuar(Solicitud $solicitud): bool
     {
-        if ($solicitud->estado == 3 && ($solicitud->itemsMuestras->count() != $solicitud->itemsSolicitados->count())) {
+        if ($solicitud->estado == 3 && ($solicitud->muestras->pluck('itemsMuestras')->map->count()->sum() != $solicitud->itemsSolicitados->count())) {
             return false;
         }
 
