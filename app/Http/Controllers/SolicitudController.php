@@ -184,7 +184,7 @@ class SolicitudController extends Controller
         $response = [
             'id' => $solicitud->id,
             'estado_actual' => $solicitud->estadoSolicitud->nombre,
-            'empleado_actual' => $solicitud->empleadoAsignado->usuario->name ?? null,
+            'estado_siguiente' => $solicitud->estadoSolicitud->estadoSiguiente->nombre ?? null,
             'tiempo_total' => $solicitud->created_at->longAbsoluteDiffForHumans(now()),
             'trazabilidad' => [],
         ];
