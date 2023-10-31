@@ -102,21 +102,25 @@ class ClienteController extends Controller
     }
 
     //funcion para obtener el expediente por cliente_id
-    public function getExpediente($cliente_id)
+    public function getExpediente($solicitud_id)
     {
         try {
-            $cliente = Cliente::findOrFail($cliente_id);
+            $solicitud = Solicitud::findOrFail($solicitud_id);
+
+            if(!$solicitud->cliente){
+                return response()->json(['errors' => ['message' => 'No se encontró el cliente asociado a la solicitud con id: ' . $solicitud_id]], 422);
+            }
 
             $response = [
-                'no_expediente' => $cliente->no_expediente,
-                'nombre' => $cliente->usuario->name,
-                'nit' => $cliente->nit,
-                'tax_name' => $cliente->tax_name
+                'no_expediente' => $solicitud->cliente->no_expediente,
+                'nombre' => $solicitud->cliente->usuario->name,
+                'nit' => $solicitud->cliente->nit,
+                'tax_name' => $solicitud->cliente->tax_name
             ];
 
             return response()->json($response, 200);
         } catch (\Throwable $th) {
-            return response()->json(['errors' => ['message' => 'No se encontró el cliente con id: ' . $cliente_id]], 422);
+            return response()->json(['errors' => ['message' => 'Ocurrio un error al obtener expediente de la solicitud con id: ' . $solicitud_id]], 422);
         }
     }
 }
