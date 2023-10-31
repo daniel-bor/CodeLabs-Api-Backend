@@ -96,7 +96,7 @@ class SolicitudController extends Controller
                 'tipo_soporte_id' => 'required|exists:tipo_soportes,id',
                 'no_soporte' => 'required|string|max:50',
                 'descripcion' => 'required|string|max:100',
-                'cliente_id' => 'required|exists:clientes,usuario_id',
+                'cliente_id' => 'required|exists:clientes,id',
                 'direccion' => 'required|string|max:100',
                 'longitud' => 'string',
                 'latitud' => 'string',
