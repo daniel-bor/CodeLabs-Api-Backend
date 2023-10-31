@@ -45,6 +45,7 @@ Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECN
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
 Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
 Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
+Route::get('/clientes/nit/{nit}', [ClienteController::class, 'getDataClientNit']);
 
 //Solicitudes
 Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes', [SolicitudController::class, 'index']);
