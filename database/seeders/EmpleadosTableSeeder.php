@@ -17,9 +17,11 @@ class EmpleadosTableSeeder extends Seeder
         $empleados = [
             ['usuario_id' => 1, 'rol_id' => 1], // Ejemplo de asignación de usuario y rol
             ['usuario_id' => 2, 'rol_id' => 1],
-            ['usuario_id' => 3, 'rol_id' => 3],
-            ['usuario_id' => 4, 'rol_id' => 4],
+            ['usuario_id' => 3, 'rol_id' => 1],
             // Agregar otros empleados aquí
+            ['usuario_id' => 4, 'rol_id' => 2],
+            ['usuario_id' => 5, 'rol_id' => 3],
+            ['usuario_id' => 6, 'rol_id' => 4],
         ];
 
         // Insertar los registros en la tabla empleados

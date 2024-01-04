@@ -27,7 +27,62 @@ class ItemsSolicitudAnalisisTableSeeder extends Seeder
                 'estado' => 1,
                 'created_at' => now()
             ],
+            [
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'item_id' => 3, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 1, // ID de la solicitud relacionada
+                'item_id' => 4, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+
             // Agregar más registros de items_solicitud_analisis aquí
+            [
+                'solicitud_id' => 3, // ID de la solicitud relacionada
+                'item_id' => 6, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 4, // ID de la solicitud relacionada
+                'item_id' => 2, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 4, // ID de la solicitud relacionada
+                'item_id' => 3, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 5, // ID de la solicitud relacionada
+                'item_id' => 3, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 5, // ID de la solicitud relacionada
+                'item_id' => 4, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 6, // ID de la solicitud relacionada
+                'item_id' => 15, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
+            [
+                'solicitud_id' => 6, // ID de la solicitud relacionada
+                'item_id' => 16, // ID del item relacionado
+                'estado' => 1,
+                'created_at' => now()
+            ],
         ];
 
         // Insertar los registros en la tabla items_solicitud_analisis

@@ -2,23 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Muestra extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     protected $table = 'muestras';
     // Relación con el tipo de muestra
     public function tipoMuestra()
     {
-        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id','id');
+        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id', 'id');
     }
 
     // Relación con el tipo de recipiente de muestra
-    public function tipoRecipienteMuestra()
+    public function tipoRecipiente()
     {
-        return $this->belongsTo(TipoRecipienteMuestra::class, 'tipo_recipiente_muestra_id');
+        return $this->belongsTo(TipoRecipiente::class, 'tipo_recipiente_id');
     }
 
     // Relación con la unidad de medida
@@ -35,12 +37,25 @@ class Muestra extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item');
+        return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item')
+            ->withTimestamps();
+    }
+
+    public function itemsMuestras()
+    {
+        return $this->hasMany(ItemsMuestra::class, 'id_muestra');
+    }
+
+    //Relacion para el estado de muestra
+    public function estadoMuestra()
+    {
+        return $this->belongsTo(EstadoSolicitud::class, 'estado', 'id');
     }
 
     protected $fillable = [
+        'codigo',
         'tipo_muestra_id',
-        'tipo_recipiente_muestra_id',
+        'tipo_recipiente_id',
         'cantidad_unidades',
         'unidad_medida_id',
         'etiqueta',
