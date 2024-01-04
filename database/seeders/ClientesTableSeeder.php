@@ -15,10 +15,9 @@ class ClientesTableSeeder extends Seeder
     {
         // Definir los 10 registros de clientes
         $clientes = [
-            ['usuario_id' => 1, 'nit' => '123456789', 'tax_name' => 'DANIEL_BOR', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-14705'],
-            ['usuario_id' => 2, 'nit' => '987654321', 'tax_name' => 'GABRIEL_VALDEZ', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-31335'],
-            ['usuario_id' => 3, 'nit' => '871632876', 'tax_name' => 'ELEAZAR_C', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-12312']
-            // Agregar otros clientes aquí
+            ['usuario_id' => 7, 'nit' => '123456789', 'tax_name' => 'LUIS_ALBERTO', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-14705', 'rol_id' => 5],
+            ['usuario_id' => 8, 'nit' => '987654321', 'tax_name' => 'JOSE_RODRIGUEZ', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-31335', 'rol_id' => 5],
+            ['usuario_id' => 9, 'nit' => '871632876', 'tax_name' => 'VICTOR_MENDOZA', 'profesion' => 'Ingeniero', 'no_expediente' => '7590-22-12312', 'rol_id' => 5]
         ];
         // Insertar los registros en la tabla clientes
         DB::table('clientes')->insert($clientes);

@@ -9,10 +9,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\EstadoSolicitud;
 use App\Models\TrazabilidadSolicitud;
+use App\Services\EstadoSolicitudService;
 use Illuminate\Validation\ValidationException;
 
 class SolicitudController extends Controller
 {
+    private EstadoSolicitudService $_estadoSolicitudService;
+
+    public function __construct(EstadoSolicitudService $estadoSolicitudService)
+    {
+        $this->_estadoSolicitudService = $estadoSolicitudService;
+    }
+
     public function index(Request $request)
     {
         try {
@@ -28,7 +36,9 @@ class SolicitudController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'cliente_id', 'created_at')
+        $usuarioActualId = $request->user()->id; // Obtiene el usuario autenticado
+
+        $resultados = Solicitud::select('id', 'codigo', 'no_soporte', 'estado', 'cliente_id', 'empleado_id', 'created_at')
             ->with('usuarioAsignado')
             ->with('estadoSolicitud')
             ->with('cliente')
@@ -57,6 +67,7 @@ class SolicitudController extends Controller
             ->when($request->has('EstadoSolicitud'), function ($query) use ($request) {
                 return $query->where('estado', $request->input('EstadoSolicitud'));
             })
+            ->where('empleado_id', $usuarioActualId)
             ->get()
             ->map(function ($item) {
                 $solicitudEstado = $item->estadoSolicitud;
@@ -68,7 +79,6 @@ class SolicitudController extends Controller
                     'no_expediente' => $item->cliente->no_expediente,
                     'nit' => $item->cliente->nit,
                     'no_soporte' => $item->no_soporte,
-                    'usuario_asignado' => $item->usuarioAsignado[0]->name ?? null,
                     'estado_solicitud' => $nombreSolicitudEstado,
                     'fecha_creacion' => $item->created_at
                 ];
@@ -86,7 +96,7 @@ class SolicitudController extends Controller
                 'tipo_soporte_id' => 'required|exists:tipo_soportes,id',
                 'no_soporte' => 'required|string|max:50',
                 'descripcion' => 'required|string|max:100',
-                'cliente_id' => 'required|exists:clientes,usuario_id',
+                'cliente_id' => 'required|exists:clientes,id',
                 'direccion' => 'required|string|max:100',
                 'longitud' => 'string',
                 'latitud' => 'string',
@@ -103,11 +113,14 @@ class SolicitudController extends Controller
             $codigo = 'EX-' . now()->format('Ymd') . '-' . Str::random(5);
             // Agregar el código a los datos validados
             $validatedData['codigo'] = $codigo;
+            $validatedData['estado'] = 1;
             // Creación de la solicitud
             $solicitud = Solicitud::create($validatedData);
             // Creación de los elementos de solicitud
             $items = collect($validatedData['items'])->pluck('id')->all();
             $solicitud->itemsSolicitados()->attach($items);
+            // Creación de la trazabilidad
+            $this->_estadoSolicitudService->crearTrazabilidad($solicitud);
             return response()->json(['message' => 'Solicitud creada correctamente'], 201);
         } catch (\Exception $e) {
             return response()->json(['errors' => ['message' => 'Error al registrar la solicitud', 'message' => $e->getMessage()]], 500);
@@ -160,7 +173,7 @@ class SolicitudController extends Controller
 
 
         if (!$solicitud) {
-            return response()->json(['error' => 'Solicitud no encontrada'], 404);
+            return response()->json(['errors' => ['message' => 'Solicitud no encontrada']], 404);
         }
 
         $trazabilidad = TrazabilidadSolicitud::with('estadoSolicitud')
@@ -171,6 +184,7 @@ class SolicitudController extends Controller
         $response = [
             'id' => $solicitud->id,
             'estado_actual' => $solicitud->estadoSolicitud->nombre,
+            'estado_siguiente' => $solicitud->estadoSolicitud->estadoSiguiente->nombre ?? null,
             'tiempo_total' => $solicitud->created_at->longAbsoluteDiffForHumans(now()),
             'trazabilidad' => [],
         ];
@@ -220,7 +234,7 @@ class SolicitudController extends Controller
         ];
 
         $itemsDisponibles = $solicitud->itemsSolicitados()
-            ->whereDoesntHave('itemMuestra')
+            // ->whereDoesntHave('itemMuestra')
             ->get();
 
         $response['items_disponibles'] = $itemsDisponibles->map(function ($item) use ($solicitud_id) {
@@ -279,7 +293,7 @@ class SolicitudController extends Controller
 
             return response()->json(['data' => $itemsSeleccionados], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -297,12 +311,53 @@ class SolicitudController extends Controller
             $solicitud->delete();
             return response()->json(['message' => 'Solicitud eliminada correctamente'], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
-    public function getEstados(){
-        $estados = EstadoSolicitud::select('id','nombre')->where('estado',1)->get();
+    public function getEstados()
+    {
+        $estados = EstadoSolicitud::select('id', 'nombre')->where('estado', 1)->get();
         return response()->json(['data' => $estados], 200);
+    }
+
+    public function assignToRole(Request $request)
+    {
+        try {
+            $request->validate([
+                'solicitud_id' => 'required|exists:solicitudes,id',
+                'accion' => 'required|string|in:SIGUIENTE,ANTERIOR',
+                'observaciones' => 'max:100',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+        $solicitud = Solicitud::find($request->input('solicitud_id'));
+
+        if (!$solicitud || ($solicitud->empleado_id != $request->user()->id)) {
+            return response()->json(['errors' => ['message' => 'Solicitud no asignada, revise los datos enviados']], 422);
+        }
+
+        try {
+            $estadoTransaccion = false;
+            switch ($request->input('accion')) {
+                case 'SIGUIENTE':
+                    $estadoTransaccion = $this->_estadoSolicitudService->continuar($solicitud, $request->input('observaciones') ?? "ASIGNADO POR ACCIÓN DE USUARIO");
+                    break;
+                case 'ANTERIOR':
+                    $estadoTransaccion = $this->_estadoSolicitudService->rechazar($solicitud, $request->input('observaciones') ?? "RECHAZADO");
+                    break;
+                default:
+                    return response()->json(['errors' => ['message' => 'Acción no permitida']], 422);
+            }
+            if (!$estadoTransaccion) {
+                return response()->json(['errors' => ['message' => 'No se pudo realizar la acción']], 422);
+            } else {
+                return response()->json(['message' => 'Solicitud asignada correctamente'], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
+        }
     }
 }

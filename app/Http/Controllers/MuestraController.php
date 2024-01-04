@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Muestra;
+use App\Models\Solicitud;
 use App\Models\TipoMuestra;
 use Illuminate\Support\Str;
 use App\Models\UnidadMedida;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -33,13 +35,19 @@ class MuestraController extends Controller
         }
 
         try {
+            $solicitud = Solicitud::find($request->solicitud_id);
+            $estadoIniciado = DB::table('estado_solicitudes')->where('nombre', 'INICIADO')->first();
+            DB::beginTransaction();
             $codigoMuestra = $this->generateMuestraCode($request->tipo_muestra_id);
             $request->merge(['codigo' => $codigoMuestra]);
             Muestra::create($request->all());
-
+            $solicitud->estado = $estadoIniciado->id;
+            $solicitud->save();
+            DB::commit();
             return response()->json(['message' => 'Muestra creada con éxito'], 201);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 422);
+            DB::rollBack();
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 422);
         }
     }
 
@@ -87,7 +95,7 @@ class MuestraController extends Controller
 
             return response()->json(['data' => $tiposMuestras], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -103,7 +111,7 @@ class MuestraController extends Controller
             })->values();
             return response()->json(['data' => $tipoRecipientes], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -114,7 +122,7 @@ class MuestraController extends Controller
 
             return response()->json(['data' => $unidadesMedida], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -131,7 +139,7 @@ class MuestraController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return response()->json(['message' => 'Error de validación', 'errors' => $validator->errors()], 400);
+                    return response()->json(['errors' => $validator->errors()], 400);
                 }
 
                 $muestra = Muestra::findOrFail($muestraData['id']);
@@ -143,7 +151,7 @@ class MuestraController extends Controller
 
             return response()->json(['message' => 'Relaciones establecidas con éxito'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error interno del servidor', 'error' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 
@@ -165,6 +173,10 @@ class MuestraController extends Controller
             'unidadMedida',
             'items',
         ])->find($muestra_id);
+
+        if(!$muestra) {
+            return response()->json(['message' => 'La muestra no existe'], 404);
+        }
 
         // Formatear los datos necesarios
         $datos = [
@@ -190,6 +202,7 @@ class MuestraController extends Controller
                 return [
                     'id' => $item->id ?? null,
                     'nombre' => $item->nombre ?? null,
+                    'tipo_examen' => $item->tipoExamen->nombre ?? null,
                 ];
             }),
         ];
@@ -216,7 +229,7 @@ class MuestraController extends Controller
 
             return response()->json(['message' => 'Muestra eliminada con éxito'], 200);
         } catch (Exception $e) {
-            return response()->json(['errors' => $e->getMessage()], 500);
+            return response()->json(['errors' => ['message' => $e->getMessage()]], 500);
         }
     }
 }

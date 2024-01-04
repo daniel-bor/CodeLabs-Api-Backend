@@ -27,17 +27,22 @@ class Solicitud extends Model
     //Relacion de usuario que esta asignado
     public function usuarioAsignado()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones','usuario_asignado_id','usuario_asignador_id')
+        return $this->belongsToMany(User::class, 'trazabilidad_solicitudes','solicitud_id', 'usuario_asignado_id')
         ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
         ->limit(1); // Limita a un solo registro (el más reciente)
+    }
+
+    //Relacion de usuario que esta asignado
+    public function empleadoAsignado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id', 'usuario_id');
     }
 
     //Relacion para el estado de solicitud
     public function estadoSolicitud()
     {
-        return $this->belongsTo(EstadoSolicitud::class, 'id', 'id');
+        return $this->belongsTo(EstadoSolicitud::class, 'estado');
     }
-
 
     //Relacion para mostrar la cantidad de muestras
     public function muestras()
@@ -48,32 +53,42 @@ class Solicitud extends Model
     // Relacion para obtener los item de las muestras relacionadas a la solicitud
     public function itemsSolicitados()
     {
-        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id');
+        return $this->belongsToMany(Item::class, 'items_solicitud_analisis', 'solicitud_id', 'item_id')->where('items_solicitud_analisis.estado', 1);
     }
 
     // Relacion para obtener los item de las muestras relacionadas a las muestras de solicitud
     public function itemsMuestras()
     {
-        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id');
+        return $this->belongsToMany(ItemsMuestra::class, 'muestras', 'solicitud_id', 'id')->where('items_muestras.estado', 1);
     }
 
 
     public function usuarioAsignador()
     {
-        return $this->belongsToMany(User::class, 'usuario_asignaciones', 'solicitud_id', 'usuario_asignador_id')
+        return $this->belongsToMany(User::class, 'trazabilidad_solicitudes', 'solicitud_id', 'usuario_asignador_id')
             ->orderBy('created_at', 'desc') // Ordena por la fecha más reciente
             ->limit(1); // Limita a un solo registro (el más reciente)
     }
 
     //Relacion para obtener la cantidad de documento delas muestras
-    public function documentosMuestra()
-    {
-        return $this->hasMany(Documento::class, 'solicitud_id', 'id');
-    }
-
     public function documentos()
     {
-        return $this->hasMany(Documento::class, 'solicitud_id');
+        return $this->hasMany(Documento::class, 'solicitud_id')->orderBy('created_at', 'desc');
+    }
+
+    public function documento()
+    {
+        return $this->hasOne(Documento::class, 'solicitud_id')->latest();
+    }
+
+    public function estadoTrazabilidad()
+    {
+        return $this->belongsToMany(EstadoSolicitud::class, 'trazabilidad_solicitud', 'estado_solicitud_id','solicitud_id');
+    }
+
+    public function trazabilidad()
+    {
+        return $this->hasMany(TrazabilidadSolicitud::class, 'solicitud_id');
     }
 
 

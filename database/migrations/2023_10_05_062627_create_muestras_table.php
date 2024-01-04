@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('unidad_medida_id')->notNull();
             $table->unsignedBigInteger('solicitud_id')->notNull();
             $table->timestamp('fecha_vencimiento')->notNull();
-            $table->unsignedBigInteger('estado')->default(10);
+            $table->unsignedBigInteger('estado')->default(13);
             $table->timestamps();
             $table->softDeletes();
 

@@ -14,7 +14,7 @@ class Muestra extends Model
     // Relación con el tipo de muestra
     public function tipoMuestra()
     {
-        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id','id');
+        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id', 'id');
     }
 
     // Relación con el tipo de recipiente de muestra
@@ -38,7 +38,12 @@ class Muestra extends Model
     public function items()
     {
         return $this->belongsToMany(Item::class, 'items_muestras', 'id_muestra', 'id_item')
-        ->withTimestamps();
+            ->withTimestamps();
+    }
+
+    public function itemsMuestras()
+    {
+        return $this->hasMany(ItemsMuestra::class, 'id_muestra');
     }
 
     //Relacion para el estado de muestra

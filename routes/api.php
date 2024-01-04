@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamenController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MuestraController;
+use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TipoSoporteController;
 use App\Models\Muestra;
@@ -40,29 +41,28 @@ Route::middleware('jwt.auth')->get('/soportes', [TipoSoporteController::class, '
 Route::get('/examenes', [ExamenController::class, 'index']);
 
 //Clientes
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/clientes', [ClienteController::class, 'index']);
+Route::middleware('jwt.auth')->get('/clientes/expediente/{solicitud_id}', [ClienteController::class, 'getExpediente']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
+Route::middleware('jwt.auth')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
 Route::get('/clientes/nit/{nit}', [ClienteController::class, 'getDataClientNit']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes', [ClienteController::class, 'index']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/expediente/{cliente_id}', [ClienteController::class, 'getExpediente']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}', [ClienteController::class, 'show']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes', [ClienteController::class, 'listarSolicitudes']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/clientes/{cliente_id}/solicitudes/{solicitud_id}', [ClienteController::class, 'verSolicitud']);
 
 //Solicitudes
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes', [SolicitudController::class, 'index']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/solicitudes', [SolicitudController::class, 'store']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->patch('/solicitudes/{solicitud_id}/asignacion', [SolicitudController::class, 'assignToRole']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->delete('/solicitudes/{solicitud_id}', [SolicitudController::class, 'deleteById']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/items/{solicitud_id}', [SolicitudController::class, 'getItems']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalleById']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/solicitudes/estados', [SolicitudController::class, 'getEstados']);
-
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes', [SolicitudController::class, 'index']);
+Route::middleware('jwt.auth')->post('/solicitudes', [SolicitudController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->patch('/solicitudes/asignacion', [SolicitudController::class, 'assignToRole']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->delete('/solicitudes/{solicitud_id}', [SolicitudController::class, 'deleteById']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/detalle/items/{solicitud_id}', [SolicitudController::class, 'getItems']);
+Route::middleware('jwt.auth')->get('/solicitudes/detalle/general/{solicitud_id}', [SolicitudController::class, 'getDetalleById']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/detalle/muestras/{solicitud_id}', [SolicitudController::class, 'getMuestras']);
+Route::middleware('jwt.auth')->get('/solicitudes/trazabilidad/{solicitud_id}', [SolicitudController::class, 'getTrazabilidad']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/solicitudes/estados', [SolicitudController::class, 'getEstados']);
 //Muestras
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras', [MuestraController::class, 'store']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->post('/muestras/items', [MuestraController::class, 'asociarItems']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->get('/muestras/tipos/{tipo_muestra_id}/recipientes', [MuestraController::class, 'getRecipientesTipoMuestra']);
-Route::middleware('jwt.auth', 'hasRole:Administrador,Analista,Asignador,Revisor')->delete('/muestras/{muestra_id}', [MuestraController::class, 'deleteById']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->post('/muestras', [MuestraController::class, 'store']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->post('/muestras/items', [MuestraController::class, 'asociarItems']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->get('/muestras/tipos/{tipo_muestra_id}/recipientes', [MuestraController::class, 'getRecipientesTipoMuestra']);
+Route::middleware('jwt.auth', 'hasRole:ADMINISTRADOR,CENTRALIZADOR,ANALISTA,TECNICO')->delete('/muestras/{muestra_id}', [MuestraController::class, 'deleteById']);
 Route::middleware('jwt.auth')->get('/muestras/tipos', [MuestraController::class, 'getTiposMuestras']);
 Route::get('/muestras/detalle/{muestra_id}', [MuestraController::class, 'getDetalleById']);
 
@@ -71,4 +71,5 @@ Route::middleware('jwt.auth')->get('/medidas', [MuestraController::class, 'getUn
 
 //TEST GRUPO 4
 Route::get('/solicitudes/test', [SolicitudController::class, 'index']);
-Route::get('/exportToPDF/{muestra_id}', [MuestraController::class, 'exportToPDF']);
+Route::post('/solicitudes/resultados/', [ReportesController::class, 'createReportResultados']);
+Route::get('/solicitudes/detalle/resultados/{solicitud_id}', [ReportesController::class, 'getResultadosSolicitud']);
