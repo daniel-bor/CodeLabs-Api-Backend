@@ -11,6 +11,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TipoSoporteController;
 use App\Models\Muestra;
 use App\Models\UnidadMedida;
+use Illuminate\Support\Facades\App;
 
 /*
 |--------------------------------------------------------------------------
