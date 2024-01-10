@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('documentos_analisis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('item_muestra_id')->notNull();
-            $table->unsignedBigInteger('tipo_documento_analisis_id')->default(1);
+            $table->unsignedBigInteger('muestra_id')->notNull();
+            $table->unsignedBigInteger('tipo_documento_analisis_id')->notNull();
             $table->string('conclusion', 100)->notNull();
-            $table->integer('estado')->default(1);
-            $table->timestamps();
+            $table->timestamp('fecha_creacion')->default(now());
+            $table->boolean('estado')->default(true);
 
             // Definición de claves foráneas
-            $table->foreign('item_muestra_id')->references('id')->on('items_muestras');
+            $table->foreign('muestra_id')->references('id')->on('muestras');
             $table->foreign('tipo_documento_analisis_id')->references('id')->on('tipo_documento_analisis');
         });
     }

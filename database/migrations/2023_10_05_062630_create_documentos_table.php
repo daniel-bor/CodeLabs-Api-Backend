@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('solicitud_id')->notNull();
             $table->string('observaciones', 100)->notNull();
             $table->string('ruta', 100)->notNull();
-            $table->integer('estado')->default(1);
-            $table->timestamps();
+            $table->timestamp('fecha_creacion')->default(now());
+            $table->boolean('estado')->default(true);
 
             // Definición de claves foráneas
             $table->foreign('solicitud_id')->references('id')->on('solicitudes');

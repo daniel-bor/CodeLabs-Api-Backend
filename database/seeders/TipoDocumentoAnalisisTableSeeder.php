@@ -22,7 +22,7 @@ class TipoDocumentoAnalisisTableSeeder extends Seeder
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo
             ],
             [
-                'nombre' => 'Certificado de Analisis',
+                'nombre' => 'Certificado de Calidad',
                 'descripcion' => 'Certificado que asegura la calidad del producto',
                 'creado_por' => 1, // ID del usuario que creó este estado
                 'estado' => 1, // Puedes usar 1 para activo o 0 para inactivo

@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
-        Schema::create('tipo_muestras', function (Blueprint $table) {
+        Schema::create('tipo_recipiente_muestra', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 50)->notNull();
             $table->string('descripcion', 100)->notNull();
@@ -29,6 +26,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('tipo_muestras');
+        Schema::dropIfExists('tipo_recipiente_muestra');
     }
 };

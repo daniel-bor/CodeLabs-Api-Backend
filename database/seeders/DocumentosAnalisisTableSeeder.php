@@ -16,13 +16,13 @@ class DocumentosAnalisisTableSeeder extends Seeder
         // Definir los registros de documentos de análisis
         $documentosAnalisis = [
             [
-                'item_muestra_id' => 1, // ID de la muestra relacionada
+                'muestra_id' => 1, // ID de la muestra relacionada
                 'tipo_documento_analisis_id' => 1, // ID del tipo de documento de análisis relacionado
                 'conclusion' => 'Informe de análisis 1',
                 'estado' => true,
             ],
             [
-                'item_muestra_id' => 2, // ID de la muestra relacionada
+                'muestra_id' => 2, // ID de la muestra relacionada
                 'tipo_documento_analisis_id' => 2, // ID del tipo de documento de análisis relacionado
                 'conclusion' => 'Informe de análisis 2',
                 'estado' => true,

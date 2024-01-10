@@ -26,9 +26,4 @@ class TipoExamen extends Model
     {
         return $this->hasMany(Item::class, 'tipo_examen_id');
     }
-
-    public function tipoMuestra()
-    {
-        return $this->belongsTo(TipoMuestra::class, 'tipo_muestra_id');
-    }
 }

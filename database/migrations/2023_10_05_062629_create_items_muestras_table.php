@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_item')->notNull();
             $table->unsignedBigInteger('id_muestra')->notNull();
-            $table->integer('estado')->default(1);
-            $table->timestamps();
-            $table->softDeletes();
+            $table->timestamp('fecha_creacion')->default(now());
 
             // Definición de claves foráneas
             $table->foreign('id_item')->references('id')->on('items');

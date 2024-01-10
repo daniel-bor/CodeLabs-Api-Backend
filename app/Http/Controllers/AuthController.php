@@ -23,10 +23,10 @@ class AuthController extends Controller
         try {
             // Verificar las credenciales del usuario y generar un token JWT
             if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
-                return response()->json(['errors' => ['message' => 'Credenciales inválidas']], 401);
+                return response()->json(['error' => 'Credenciales inválidas'], 401);
             }
         } catch (JWTException $e) {
-            return response()->json(['errors' => ['message' => 'No se pudo crear el token']], 500);
+            return response()->json(['error' => 'No se pudo crear el token'], 500);
         }
 
         // El inicio de sesión fue exitoso, devuelve el token JWT y los datos del usuario y del cliente asociado
@@ -37,7 +37,6 @@ class AuthController extends Controller
             'token' => $token,
             'user' => $user,
             'cliente' => $cliente, // Agrega los datos del cliente asociado aquí
-            'rol' => $user->empleado->rol->nombre ?? "CLIENTE"
         ]);
     }
 
@@ -72,8 +71,7 @@ class AuthController extends Controller
             Cliente::created([
                 'usuario_id' => $user->id,
                 'nit ' => $request->nit,
-                'profesion ' => $request->profesion,
-                'rol_id' => 5,
+                'profesion ' => $request->profesion
             ]);
 
             return response()->json(['message' => 'Registro exitoso'], 201);
@@ -82,7 +80,7 @@ class AuthController extends Controller
             // use JWTAuth; // Importa JWTAuth al principio del controlador
             // $token = JWTAuth::fromUser($user);
         } catch (\Exception $e) {
-            return response()->json(['errors' => ['message' => 'No se pudo registrar el usuario']], 500);
+            return response()->json(['error' => 'No se pudo registrar el usuario'], 500);
         }
     }
 
@@ -94,7 +92,7 @@ class AuthController extends Controller
 
             return response()->json(['message' => 'Sesión cerrada con éxito']);
         } catch (JWTException $e) {
-            return response()->json(['errors' => ['message' => 'No se pudo cerrar la sesión']], 500);
+            return response()->json(['error' => 'No se pudo cerrar la sesión'], 500);
         }
     }
 }

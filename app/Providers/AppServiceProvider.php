@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use DateTime;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -77,20 +76,5 @@ class AppServiceProvider extends ServiceProvider
             return preg_match('/^[a-zA-Z]{8,12}$/', $value);
         });
 
-        Validator::extend('codigo_muestra', function ($attribute, $value, $parameters, $validator) {
-            // Verifica si la cadena tiene la estructura correcta
-            if (!preg_match('/^(SA|OR|TE|ES|FL|IS)-\d{8}-\d{5}$/', $value)) {
-                return false;
-            }
-
-            // Extrae la fecha de los 8 dígitos (YYYYMMDD)
-            $fecha = substr($value, 3, 8);
-
-            // Intenta crear una fecha con el formato especificado
-            $fecha_obj = DateTime::createFromFormat('Ymd', $fecha);
-
-            // Valida si la fecha es válida
-            return $fecha_obj && $fecha_obj->format('Ymd') === $fecha;
-        });
     }
 }

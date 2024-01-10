@@ -23,16 +23,13 @@ return new class extends Migration
             $table->string('direccion', 100)->notNull();
             $table->string('longitud')->notNull();
             $table->string('latitud')->notNull();
-            $table->unsignedBigInteger('estado')->default(1);
-            $table->unsignedBigInteger('empleado_id')->nullable();
+            $table->unsignedBigInteger('estado')->notNull()->default(1);
             $table->timestamps();
-            $table->softDeletes();
 
             // Definición de claves foráneas
             $table->foreign('tipo_soporte_id')->references('id')->on('tipo_soportes');
-            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->foreign('cliente_id')->references('usuario_id')->on('clientes');
             $table->foreign('estado')->references('id')->on('estado_solicitudes');
-            $table->foreign('empleado_id')->references('id')->on('empleados');
         });
     }
 

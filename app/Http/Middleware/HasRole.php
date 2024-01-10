@@ -24,6 +24,11 @@ class HasRole
             }
         }
 
-        return response()->json(['errors' => ['message' => 'No tienes permisos para realizar esta acción.']], 403);
+        return response()->json([
+            'error' => [
+                'message' => 'No tienes permisos para realizar esta acción.',
+                'status_code' => 403
+            ]
+        ], 403);
     }
 }

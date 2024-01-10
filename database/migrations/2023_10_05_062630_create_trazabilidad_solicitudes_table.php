@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('trazabilidad_solicitudes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('solicitud_id')->notNull();
-            $table->unsignedBigInteger('estado_solicitud_id')->default(1);
-            $table->string('observaciones', 100)->nullable();
+            $table->unsignedBigInteger('estado_solicitud_id')->notNull();
+            $table->string('observaciones', 100)->notNull();
             $table->unsignedBigInteger('usuario_asignador_id')->nullable();
             $table->unsignedBigInteger('usuario_asignado_id')->nullable();
-            $table->integer('estado')->default(1);
             $table->timestamps();
 
             // Definición de claves foráneas
